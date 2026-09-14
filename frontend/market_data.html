@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Data — FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0a0c12; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  nav { max-width: 1000px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; transition: all .15s; }
+  nav a:hover  { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 3px 0; }
+  p.site-sub    { text-align: center; color: #5a5a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  /* CONTROLS */
+  .controls-card { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; max-width: 1000px; margin: 0 auto 1.25rem auto; }
+  .controls-row  { display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+  .field-group   { display: flex; flex-direction: column; gap: 5px; }
+  .field-label   { font-size: 11px; color: #7a82a8; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+  select { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 7px; padding: 10px 14px; font-size: 14px; cursor: pointer; min-width: 200px; }
+  select:focus { outline: none; border-color: #3b6fea; }
+
+  .btn-fetch  { background: #3b6fea; color: #fff; border: none; padding: 10px 22px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-fetch:hover { background: #2f5bd0; }
+  .btn-fetch:disabled { background: #22253a; color: #5a5a7a; cursor: not-allowed; }
+
+  /* REFRESH CONTROLS */
+  .refresh-group { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
+  .refresh-group label { font-size: 12px; color: #6a6a9a; }
+  .toggle-sw { position: relative; width: 36px; height: 20px; cursor: pointer; }
+  .toggle-sw input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #22253a; border-radius: 20px; transition: .2s; }
+  .slider::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #5a5a7a; border-radius: 50%; transition: .2s; }
+  input:checked + .slider { background: #3b6fea; }
+  input:checked + .slider::before { transform: translateX(16px); background: #fff; }
+  .countdown { font-size: 12px; color: #5a5a7a; min-width: 40px; text-align: right; }
+
+  /* LIVE DOT */
+  .live-indicator { display: none; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #4ade80; text-transform: uppercase; letter-spacing: .8px; }
+  .live-indicator.visible { display: flex; }
+  .live-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse {
+    0%   { opacity: 1; transform: scale(1); }
+    50%  { opacity: .4; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* PRICE CARD */
+  .price-card { background: #13151e; border: 1px solid #22253a; border-radius: 12px; padding: 1.75rem; max-width: 1000px; margin: 0 auto 1.25rem auto; position: relative; overflow: hidden; transition: border-color .3s; }
+  .price-card.flash-up   { border-color: #22c55e; animation: flashUp .5s ease-out; }
+  .price-card.flash-down { border-color: #ef4444; animation: flashDown .5s ease-out; }
+  @keyframes flashUp   { 0% { background: #0d2010; } 100% { background: #13151e; } }
+  @keyframes flashDown { 0% { background: #20100d; } 100% { background: #13151e; } }
+
+  .coin-header { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+  .coin-icon   { font-size: 28px; }
+  .coin-name   { font-size: 22px; font-weight: 800; color: #fff; }
+  .coin-pair   { font-size: 13px; color: #5a5a7a; margin-left: 4px; }
+  .change-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-left: auto; }
+  .change-badge.up   { background: #0d2010; color: #4ade80; border: 1px solid #166534; }
+  .change-badge.down { background: #20100d; color: #f87171; border: 1px solid #7f1d1d; }
+
+  /* BID / ASK BOX */
+  .ba-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; margin-bottom: 1.5rem; border: 1px solid #22253a; border-radius: 10px; overflow: hidden; }
+  .ba-cell { padding: 1.5rem; }
+  .ba-cell.bid { background: #0b1e14; border-right: 1px solid #22253a; }
+  .ba-cell.ask { background: #1e0b0b; }
+  .ba-cell.spread-cell { background: #0f1117; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem .75rem; border-right: 1px solid #22253a; }
+  .ba-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: .5rem; }
+  .ba-cell.bid .ba-label { color: #4ade80; }
+  .ba-cell.ask .ba-label { color: #f87171; }
+  .ba-price { font-size: 32px; font-weight: 800; font-family: 'Menlo', 'Consolas', monospace; line-height: 1.1; }
+  .ba-cell.bid .ba-price { color: #4ade80; }
+  .ba-cell.ask .ba-price { color: #f87171; }
+  .ba-sub   { font-size: 12px; color: #5a5a7a; margin-top: 4px; }
+  .spread-label { font-size: 10px; color: #5a5a7a; text-transform: uppercase; letter-spacing: .6px; }
+  .spread-val   { font-size: 16px; font-weight: 700; color: #f59e0b; font-family: monospace; margin: 2px 0; }
+  .spread-pct   { font-size: 11px; color: #78450a; }
+
+  /* STATS GRID */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+  .stat-box { background: #0f1117; border: 1px solid #22253a; border-radius: 8px; padding: .85rem 1rem; }
+  .stat-label { font-size: 10px; color: #5a5a7a; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px; }
+  .stat-value { font-size: 16px; font-weight: 700; font-family: monospace; color: #e8e8e8; }
+  .stat-value.up   { color: #4ade80; }
+  .stat-value.down { color: #f87171; }
+  .stat-sub { font-size: 11px; color: #5a5a7a; margin-top: 2px; }
+
+  /* TIMESTAMP */
+  .timestamp-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: .75rem; border-top: 1px solid #1a1d2e; }
+  .ts-label { font-size: 11px; color: #3e4460; }
+  .ts-val   { font-size: 11px; font-family: monospace; color: #3e4460; }
+
+  /* SPINNER / ERROR / PLACEHOLDER */
+  #spinner { display: none; text-align: center; padding: 3rem; color: #5a5a7a; font-size: 13px; }
+  .dot { animation: blink 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink {
+    0%   { opacity: 0; }
+    40%  { opacity: 1; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  .placeholder { text-align: center; padding: 3rem; color: #3e4460; font-size: 14px; border: 1px dashed #22253a; border-radius: 12px; max-width: 1000px; margin: 0 auto; }
+  .error-box { max-width: 1000px; margin: 0 auto; background: #2a1518; border: 1px solid #5c2326; border-radius: 8px; padding: 1rem 1.25rem; color: #f87171; font-size: 13px; }
+
+  #price-area { display: none; }
+
+  /* SOURCE BADGE */
+  .source-badge { font-size: 11px; color: #0052ff; background: #0a1240; border: 1px solid #1a2a60; border-radius: 4px; padding: 2px 8px; }
+
+  footer { text-align: center; color: #2e3250; font-size: 11px; margin-top: 2.5rem; }
+
+  @media (max-width: 600px) {
+    .ba-grid { grid-template-columns: 1fr; }
+    .ba-cell.spread-cell { border-right: none; border-top: 1px solid #22253a; border-bottom: 1px solid #22253a; }
+    .ba-cell.bid { border-right: none; }
+    .ba-price { font-size: 26px; }
+  }
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html">Trade Latency</a>
+  <a href="log-search.html">Log Search</a>
+  <a href="market-data.html" class="active">Market Data</a>
+  <a href="stp.html">STP Generator</a>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">Live Coinbase market data &mdash; real-time Bid &amp; Ask prices via the Coinbase Exchange REST API</p>
+
+<!-- CONTROLS -->
+<div class="controls-card">
+  <div class="controls-row">
+    <div class="field-group">
+      <span class="field-label">Select Coin</span>
+      <select id="coinSelect">
+        <option value="BTC-USD">₿  Bitcoin (BTC/USD)</option>
+        <option value="ETH-USD">Ξ  Ethereum (ETH/USD)</option>
+        <option value="LTC-USD">Ł  Litecoin (LTC/USD)</option>
+        <option value="SOL-USD">◎  Solana (SOL/USD)</option>
+        <option value="ADA-USD">₳  Cardano (ADA/USD)</option>
+        <option value="DOGE-USD">Ð  Dogecoin (DOGE/USD)</option>
+        <option value="XRP-USD">✕  XRP (XRP/USD)</option>
+        <option value="BCH-USD">₿  Bitcoin Cash (BCH/USD)</option>
+        <option value="LINK-USD">⬡  Chainlink (LINK/USD)</option>
+        <option value="AVAX-USD">△  Avalanche (AVAX/USD)</option>
+        <option value="DOT-USD">●  Polkadot (DOT/USD)</option>
+        <option value="MATIC-USD">⬟  Polygon (MATIC/USD)</option>
+        <option value="UNI-USD">🦄  Uniswap (UNI/USD)</option>
+        <option value="ATOM-USD">⚛  Cosmos (ATOM/USD)</option>
+        <option value="NEAR-USD">◈  NEAR Protocol (NEAR/USD)</option>
+      </select>
+    </div>
+
+    <button class="btn-fetch" id="fetchBtn">Get Price</button>
+
+    <div class="refresh-group">
+      <label for="autoRefresh" style="font-size:12px;color:#6a6a9a">Auto-refresh</label>
+      <label class="toggle-sw">
+        <input type="checkbox" id="autoRefresh">
+        <span class="slider"></span>
+      </label>
+      <select id="refreshInterval" style="min-width:unset;padding:6px 8px;font-size:12px">
+        <option value="10">10s</option>
+        <option value="15" selected>15s</option>
+        <option value="30">30s</option>
+        <option value="60">60s</option>
+      </select>
+      <div class="countdown" id="countdown"></div>
+      <div class="live-indicator" id="liveIndicator">
+        <div class="live-dot"></div> LIVE
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="spinner">Fetching from Coinbase<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+
+<div class="placeholder" id="placeholder">
+  Select a coin above and click <strong>Get Price</strong> to see live Bid &amp; Ask data from Coinbase
+</div>
+
+<div id="price-area">
+  <div class="price-card" id="priceCard">
+
+    <div class="coin-header">
+      <span class="coin-icon" id="coinIcon"></span>
+      <div>
+        <span class="coin-name" id="coinName"></span>
+        <span class="coin-pair" id="coinPair"></span>
+      </div>
+      <span class="change-badge" id="changeBadge"></span>
+      <span class="source-badge">Coinbase Exchange</span>
+    </div>
+
+    <!-- BID / SPREAD / ASK -->
+    <div class="ba-grid">
+      <div class="ba-cell bid">
+        <div class="ba-label">BID</div>
+        <div class="ba-price" id="bidPrice"></div>
+        <div class="ba-sub">Best buy price</div>
+      </div>
+      <div class="ba-cell spread-cell">
+        <div class="spread-label">Spread</div>
+        <div class="spread-val"  id="spreadVal"></div>
+        <div class="spread-pct"  id="spreadPct"></div>
+      </div>
+      <div class="ba-cell ask">
+        <div class="ba-label">ASK</div>
+        <div class="ba-price" id="askPrice"></div>
+        <div class="ba-sub">Best sell price</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Last Price</div>
+        <div class="stat-value" id="lastPrice"></div>
+        <div class="stat-sub">Most recent trade</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Mid Price</div>
+        <div class="stat-value" id="midPrice"></div>
+        <div class="stat-sub">(Bid + Ask) / 2</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">24h High</div>
+        <div class="stat-value up" id="high24"></div>
+        <div class="stat-sub" id="pctFromHigh"></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">24h Low</div>
+        <div class="stat-value down" id="low24"></div>
+        <div class="stat-sub" id="pctFromLow"></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">24h Open</div>
+        <div class="stat-value" id="open24"></div>
+        <div class="stat-sub">Opening price</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">24h Volume</div>
+        <div class="stat-value" id="volume24" style="font-size:14px"></div>
+        <div class="stat-sub" id="volumeBase"></div>
+      </div>
+    </div>
+
+    <div class="timestamp-row">
+      <span class="ts-label">Exchange timestamp</span>
+      <span class="ts-val" id="tsVal"></span>
+    </div>
+  </div>
+</div>
+
+<div class="error-box" id="errorBox" style="display:none"></div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist &nbsp;&middot;&nbsp; Market data provided by Coinbase Exchange</footer>
+
+<script>
+var API = '${api_endpoint}/market-data';
+
+var refreshTimer    = null;
+var countdownTimer  = null;
+var lastData        = null;
+var lastDirection   = null;
+
+// ── Fetch ──────────────────────────────────────────────────────────────────
+function fetchMarketData(silent) {
+  var product = document.getElementById('coinSelect').value;
+  if (!silent) {
+    document.getElementById('spinner').style.display     = 'block';
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('price-area').style.display  = 'none';
+    document.getElementById('errorBox').style.display    = 'none';
+  }
+  document.getElementById('fetchBtn').disabled = true;
+
+  fetch(API + '?product=' + encodeURIComponent(product))
+    .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+    .then(function (result) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('fetchBtn').disabled     = false;
+      if (!result.ok) {
+        showError(result.data.error || 'Failed to fetch market data.');
+        return;
+      }
+      renderData(result.data);
+    })
+    .catch(function (err) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('fetchBtn').disabled     = false;
+      showError('Network error: ' + err.message);
+    });
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderData(d) {
+  // Detect price direction for flash animation
+  var direction = null;
+  if (lastData && lastData.product_id === d.product_id) {
+    direction = d.last > lastData.last ? 'up' : d.last < lastData.last ? 'down' : null;
+  }
+  lastData      = d;
+  lastDirection = direction;
+
+  // Coin header
+  document.getElementById('coinIcon').textContent = d.icon || '';
+  document.getElementById('coinName').textContent = d.name;
+  document.getElementById('coinPair').textContent = d.base + ' / USD';
+
+  // Change badge
+  var badge     = document.getElementById('changeBadge');
+  var arrow     = d.direction === 'up' ? '▲' : '▼';
+  var sign      = d.change_pct_24h >= 0 ? '+' : '';
+  badge.textContent  = arrow + ' ' + sign + d.change_pct_24h + '%  24h';
+  badge.className    = 'change-badge ' + (d.direction === 'up' ? 'up' : 'down');
+
+  // Bid / Ask / Spread
+  document.getElementById('bidPrice').textContent  = '$' + d.fmt_bid;
+  document.getElementById('askPrice').textContent  = '$' + d.fmt_ask;
+  document.getElementById('spreadVal').textContent = '$' + d.fmt_spread;
+  document.getElementById('spreadPct').textContent = d.spread_pct + '%';
+
+  // Stats
+  document.getElementById('lastPrice').textContent = '$' + d.fmt_last;
+  document.getElementById('midPrice').textContent  = '$' + fmtNum(d.mid);
+  document.getElementById('high24').textContent    = '$' + d.fmt_high;
+  document.getElementById('low24').textContent     = '$' + d.fmt_low;
+  document.getElementById('open24').textContent    = '$' + fmtNum(d.open_24h);
+  document.getElementById('volume24').textContent  = d.fmt_volume;
+  document.getElementById('volumeBase').textContent= d.base + ' traded 24h';
+  document.getElementById('pctFromHigh').textContent = d.pct_from_high + '% from high';
+  document.getElementById('pctFromLow').textContent  = '+' + d.pct_from_low + '% from low';
+
+  // Timestamp
+  document.getElementById('tsVal').textContent = d.fetched_at;
+
+  // Show price area
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('errorBox').style.display    = 'none';
+  document.getElementById('price-area').style.display  = 'block';
+
+  // Flash animation
+  var card = document.getElementById('priceCard');
+  card.classList.remove('flash-up', 'flash-down');
+  if (direction) {
+    void card.offsetWidth; // force reflow
+    card.classList.add(direction === 'up' ? 'flash-up' : 'flash-down');
+    setTimeout(function () { card.classList.remove('flash-up', 'flash-down'); }, 600);
+  }
+}
+
+function fmtNum(n) {
+  if (!n) return '0.00';
+  if (n >= 1000) return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (n >= 1)    return n.toFixed(4);
+  return n.toFixed(6);
+}
+
+// ── Auto-refresh ──────────────────────────────────────────────────────────
+function startRefresh() {
+  stopRefresh();
+  var interval = parseInt(document.getElementById('refreshInterval').value);
+  var countdown = interval;
+
+  document.getElementById('liveIndicator').classList.add('visible');
+  document.getElementById('countdown').textContent = countdown + 's';
+
+  countdownTimer = setInterval(function () {
+    countdown--;
+    document.getElementById('countdown').textContent = countdown + 's';
+    if (countdown <= 0) {
+      countdown = interval;
+      fetchMarketData(true);
+    }
+  }, 1000);
+}
+
+function stopRefresh() {
+  clearInterval(countdownTimer);
+  clearInterval(refreshTimer);
+  document.getElementById('liveIndicator').classList.remove('visible');
+  document.getElementById('countdown').textContent = '';
+}
+
+document.getElementById('autoRefresh').addEventListener('change', function () {
+  if (this.checked) { startRefresh(); } else { stopRefresh(); }
+});
+
+document.getElementById('refreshInterval').addEventListener('change', function () {
+  if (document.getElementById('autoRefresh').checked) startRefresh();
+});
+
+document.getElementById('coinSelect').addEventListener('change', function () {
+  if (lastData) fetchMarketData(false);
+  if (document.getElementById('autoRefresh').checked) startRefresh();
+});
+
+document.getElementById('fetchBtn').addEventListener('click', function () {
+  fetchMarketData(false);
+  if (document.getElementById('autoRefresh').checked) startRefresh();
+});
+
+function showError(msg) {
+  document.getElementById('spinner').style.display    = 'none';
+  document.getElementById('price-area').style.display = 'none';
+  var eb = document.getElementById('errorBox');
+  eb.textContent  = msg;
+  eb.style.display = 'block';
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log Search — FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0a0c12; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  /* NAV */
+  nav { max-width: 1000px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; transition: all .15s; }
+  nav a:hover  { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 3px 0; }
+  p.site-sub    { text-align: center; color: #5a5a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  .card { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; max-width: 1000px; margin: 0 auto 1.25rem auto; }
+  .card-title { font-size: 12px; font-weight: 700; color: #7a82a8; text-transform: uppercase; letter-spacing: .9px; margin: 0 0 1rem 0; padding-bottom: .6rem; border-bottom: 1px solid #22253a; }
+
+  /* SEARCH FORM */
+  .search-grid { display: grid; grid-template-columns: 1fr auto; gap: .75rem; align-items: end; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  label.field-label { font-size: 11px; color: #7a82a8; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  input[type=text] { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 6px; padding: 9px 12px; font-size: 13px; font-family: monospace; width: 100%; }
+  input[type=text]:focus { outline: none; border-color: #3b6fea; }
+
+  .options-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .75rem; align-items: center; }
+  .toggle-group { display: flex; align-items: center; gap: 8px; }
+  .toggle-group label { font-size: 12px; color: #8888a0; cursor: pointer; }
+  input[type=checkbox] { accent-color: #3b6fea; width: 14px; height: 14px; cursor: pointer; }
+  select { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 6px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
+  select:focus { outline: none; border-color: #3b6fea; }
+
+  .upload-area { border: 2px dashed #22253a; border-radius: 8px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: border-color .2s; margin-bottom: .75rem; }
+  .upload-area:hover, .upload-area.drag-over { border-color: #3b6fea; background: #13182a; }
+  .upload-area p { margin: 0; font-size: 13px; color: #5a5a7a; }
+  .upload-area .fname { color: #a0b8e8; font-family: monospace; font-size: 12px; margin-top: 5px; }
+  #fileInput { display: none; }
+
+  .btn { background: #3b6fea; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .btn:hover    { background: #2f5bd0; }
+  .btn:disabled { background: #22253a; color: #5a5a7a; cursor: not-allowed; }
+
+  /* SPINNER */
+  #spinner { display: none; text-align: center; padding: 2rem; color: #5a5a7a; font-size: 13px; }
+  .dot { animation: blink 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink {
+    0%   { opacity: 0; }
+    40%  { opacity: 1; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* RESULTS HEADER BAR */
+  #results { display: none; }
+  .results-bar { max-width: 1000px; margin: 0 auto .75rem auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+  .results-bar .stat { font-size: 13px; color: #8888a0; }
+  .results-bar .stat strong { color: #e8e8e8; }
+  .results-bar .trunc-warn { font-size: 12px; color: #f59e0b; background: #2a2010; border: 1px solid #78450a; border-radius: 5px; padding: 4px 10px; }
+
+  /* MATCH CARD */
+  .match-card { max-width: 1000px; margin: 0 auto 1.25rem auto; border-radius: 10px; overflow: hidden; border: 1px solid #22253a; }
+
+  .match-header { background: #1a1d2e; padding: .65rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+  .match-number { font-size: 12px; font-weight: 700; color: #3b6fea; text-transform: uppercase; letter-spacing: .6px; }
+  .match-meta   { font-size: 11px; color: #5a5a7a; font-family: monospace; }
+  .term-badge   { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #1a2240; color: #7ab8f5; border: 1px solid #2a3a5a; margin-left: 4px; }
+  .format-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; }
+  .fmt-FIX  { background: #14253a; color: #3b6fea; border: 1px solid #1e3a5a; }
+  .fmt-pipe { background: #14253a; color: #06b6d4; border: 1px solid #0e3040; }
+  .fmt-csv  { background: #1a2510; color: #84cc16; border: 1px solid #2a3a10; }
+  .fmt-text { background: #1a1a2e; color: #8888a0; border: 1px solid #22253a; }
+
+  /* CONTEXT LOG VIEWER */
+  .log-viewer { background: #0a0c12; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; font-size: 12px; }
+
+  .log-line { display: flex; align-items: flex-start; border-bottom: 1px solid #0f111a; }
+  .log-line:last-child { border-bottom: none; }
+
+  /* Line number gutter */
+  .ln { min-width: 56px; text-align: right; padding: 5px 10px 5px 6px; color: #2e3250; font-size: 11px; user-select: none; flex-shrink: 0; border-right: 2px solid #0f111a; }
+
+  /* Context lines above/below */
+  .log-line.above .ln, .log-line.below .ln { color: #2e3250; }
+  .log-line.above .lc, .log-line.below .lc { color: #3a3e55; padding: 5px 12px; line-height: 1.5; word-break: break-all; flex: 1; }
+
+  /* THE MATCH LINE — main focus */
+  .log-line.match { background: #0f1a10; border-left: 4px solid #22c55e; }
+  .log-line.match .ln { color: #4ade80; border-right-color: #1a3a20; min-width: 52px; }
+  .log-line.match .lc { color: #e8ffe8; padding: 7px 12px; line-height: 1.6; word-break: break-all; flex: 1; font-weight: 500; }
+
+  /* Highlighted search term inside a line */
+  mark { background: #f59e0b; color: #0a0c12; border-radius: 2px; padding: 0 2px; font-weight: 700; }
+
+  /* Separator between above and below context */
+  .match-separator { height: 1px; background: #1a1d2e; }
+
+  /* FIX FIELD DECODE TABLE */
+  .fix-decode { background: #0d1220; border-top: 1px solid #1a2040; padding: .5rem .75rem; }
+  .fix-decode-title { font-size: 10px; color: #3b6fea; text-transform: uppercase; letter-spacing: .6px; margin-bottom: .4rem; font-weight: 700; }
+  .fix-fields { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fix-field { display: inline-flex; align-items: center; gap: 4px; background: #13182a; border: 1px solid #1e2a40; border-radius: 4px; padding: 2px 7px; font-size: 11px; }
+  .fix-tag   { color: #3b6fea; font-weight: 700; }
+  .fix-label { color: #5a6a8a; font-size: 10px; }
+  .fix-val   { color: #c8d8f0; }
+  .fix-friendly { color: #4ade80; font-size: 10px; margin-left: 2px; }
+
+  /* STRUCTURED FIELDS (CSV / pipe) */
+  .struct-decode { background: #0d1220; border-top: 1px solid #1a2040; padding: .5rem .75rem; }
+  .struct-fields { display: flex; flex-wrap: wrap; gap: 4px; }
+  .struct-field { background: #13182a; border: 1px solid #1e2a40; border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #c8d8f0; }
+
+  /* COPY BUTTON on match card */
+  .copy-match-btn { font-size: 11px; color: #5a5a7a; background: none; border: 1px solid #22253a; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+  .copy-match-btn:hover { color: #fff; border-color: #3b6fea; }
+
+  /* ERRORS */
+  .error-box { max-width: 1000px; margin: 0 auto; background: #2a1518; border: 1px solid #5c2326; border-radius: 8px; padding: 1rem 1.25rem; color: #f87171; font-size: 13px; }
+  .no-results { max-width: 1000px; margin: 0 auto; text-align: center; padding: 2rem; color: #5a5a7a; font-size: 14px; border: 1px dashed #22253a; border-radius: 10px; }
+
+  footer { text-align: center; color: #2e3250; font-size: 11px; margin-top: 2.5rem; }
+
+  @media (max-width: 640px) {
+    .search-grid { grid-template-columns: 1fr; }
+  }
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html">Trade Latency</a>
+  <a href="log-search.html" class="active">Log Search</a>
+  <a href="market-data.html">Market Data</a>
+  <a href="stp.html">STP Generator</a>
+
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">OMS / EMS Log Search &mdash; find any term in your log file and see 10 lines of context above and below every match</p>
+
+<!-- SEARCH CARD -->
+<div class="card">
+  <p class="card-title">Upload Log &amp; Search</p>
+
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept=".log,.txt,.fix,.csv,.out,.dat">
+    <p>Drag &amp; drop your OMS / EMS / FIX log file here, or click to browse</p>
+    <p id="fileName" class="fname"></p>
+  </div>
+
+  <div class="search-grid">
+    <div class="field-group">
+      <label class="field-label">Search Terms <span style="color:#3e4460;font-weight:400">(comma-separated for multiple)</span></label>
+      <input type="text" id="termsInput" placeholder="e.g.  ERROR,  REJECT,  Connection reset,  35=D">
+    </div>
+    <button class="btn" id="searchBtn" disabled>Search Log</button>
+  </div>
+
+  <div class="options-row">
+    <div class="toggle-group">
+      <input type="checkbox" id="caseSensitive">
+      <label for="caseSensitive">Case sensitive</label>
+    </div>
+    <div class="toggle-group">
+      <label for="matchMode" style="color:#8888a0;font-size:12px">Match mode:</label>
+      <select id="matchMode">
+        <option value="any">ANY term (OR)</option>
+        <option value="all">ALL terms (AND)</option>
+      </select>
+    </div>
+    <div class="toggle-group">
+      <label for="contextLines" style="color:#8888a0;font-size:12px">Context lines:</label>
+      <select id="contextLines">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+    <div class="toggle-group">
+      <label for="maxResults" style="color:#8888a0;font-size:12px">Max results:</label>
+      <select id="maxResults">
+        <option value="25">25</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div id="spinner">Searching<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+
+<div id="results"></div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var API = '${api_endpoint}/log-search';
+var selectedFile = null;
+
+// ── File selection ─────────────────────────────────────────────────────────
+var uploadArea = document.getElementById('uploadArea');
+var fileInput  = document.getElementById('fileInput');
+
+uploadArea.addEventListener('click', function () { fileInput.click(); });
+uploadArea.addEventListener('dragover',  function (e) { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', function ()  { uploadArea.classList.remove('drag-over'); });
+uploadArea.addEventListener('drop', function (e) {
+  e.preventDefault(); uploadArea.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', function () {
+  if (fileInput.files.length) setFile(fileInput.files[0]);
+});
+
+function setFile(f) {
+  if (f.size > 10 * 1024 * 1024) { alert('File exceeds 10 MB. Please use a smaller log sample.'); return; }
+  selectedFile = f;
+  document.getElementById('fileName').textContent = f.name + '  (' + (f.size / 1024).toFixed(1) + ' KB)';
+  updateSearchBtn();
+}
+
+document.getElementById('termsInput').addEventListener('input', updateSearchBtn);
+function updateSearchBtn() {
+  var terms = document.getElementById('termsInput').value.trim();
+  document.getElementById('searchBtn').disabled = !(selectedFile && terms);
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+document.getElementById('searchBtn').addEventListener('click', function () {
+  if (!selectedFile) return;
+  var terms = document.getElementById('termsInput').value.trim();
+  if (!terms) return;
+
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML     = '';
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('searchBtn').disabled    = true;
+
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var b64 = btoa(new Uint8Array(e.target.result)
+      .reduce(function (d, b) { return d + String.fromCharCode(b); }, ''));
+
+    fetch(API, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content:       b64,
+        terms:         terms,
+        case_sensitive: document.getElementById('caseSensitive').checked,
+        match_mode:    document.getElementById('matchMode').value,
+        context_lines: parseInt(document.getElementById('contextLines').value),
+        max_results:   parseInt(document.getElementById('maxResults').value),
+      })
+    })
+    .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+    .then(function (result) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('searchBtn').disabled   = false;
+      if (!result.ok) { showError(result.data.error || 'Search failed.'); return; }
+      renderResults(result.data);
+    })
+    .catch(function (err) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('searchBtn').disabled   = false;
+      showError('Request failed: ' + err.message);
+    });
+  };
+  reader.readAsArrayBuffer(selectedFile);
+});
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderResults(data) {
+  var container = document.getElementById('results');
+  container.innerHTML = '';
+  container.style.display = 'block';
+
+  if (data.total_matches_found === 0) {
+    container.innerHTML = '<div class="no-results">No matches found for <strong>' +
+      esc(data.search_terms.join(', ')) + '</strong> in ' +
+      data.total_lines.toLocaleString() + ' lines.</div>';
+    return;
+  }
+
+  // Stats bar
+  var bar = document.createElement('div');
+  bar.className = 'results-bar';
+  bar.innerHTML =
+    '<div class="stat">' +
+    '<strong>' + data.total_matches_found.toLocaleString() + '</strong> match' + (data.total_matches_found !== 1 ? 'es' : '') +
+    ' in <strong>' + data.total_lines.toLocaleString() + '</strong> lines' +
+    (data.results_returned < data.total_matches_found
+      ? ' &nbsp;&middot;&nbsp; showing first <strong>' + data.results_returned + '</strong>' : '') +
+    '</div>' +
+    (data.truncated ? '<span class="trunc-warn">⚠ Truncated — increase max results or narrow your search</span>' : '');
+  container.appendChild(bar);
+
+  // Match cards
+  data.results.forEach(function (match) {
+    container.appendChild(buildMatchCard(match, data.search_terms));
+  });
+}
+
+function buildMatchCard(match, searchTerms) {
+  var card = document.createElement('div');
+  card.className = 'match-card';
+
+  // Header
+  var termBadges = match.matched_terms.map(function (t) {
+    return '<span class="term-badge">' + esc(t) + '</span>';
+  }).join('');
+  var fmtClass = 'fmt-' + (match.format || 'text');
+  var fmtLabel = (match.format || 'text').toUpperCase();
+  card.innerHTML =
+    '<div class="match-header">' +
+    '<div><span class="match-number">Match ' + match.match_number + '</span>' +
+    termBadges +
+    '<span class="format-badge ' + fmtClass + '">' + fmtLabel + '</span></div>' +
+    '<div style="display:flex;align-items:center;gap:.75rem">' +
+    '<span class="match-meta">Line ' + match.match_line_number.toLocaleString() + '</span>' +
+    '<button class="copy-match-btn" data-idx="' + match.match_number + '">Copy block</button>' +
+    '</div></div>';
+
+  // Log viewer
+  var viewer = document.createElement('div');
+  viewer.className = 'log-viewer';
+
+  var aboveLines  = match.context.filter(function (c) { return c.type === 'above'; });
+  var matchLine   = match.context.find(function  (c) { return c.type === 'match'; });
+  var belowLines  = match.context.filter(function (c) { return c.type === 'below'; });
+
+  aboveLines.forEach(function (c) { viewer.appendChild(buildLogLine(c, searchTerms)); });
+  if (matchLine) {
+    var sep = document.createElement('div');
+    sep.className = 'match-separator';
+    viewer.appendChild(sep);
+    viewer.appendChild(buildLogLine(matchLine, searchTerms));
+    sep = document.createElement('div');
+    sep.className = 'match-separator';
+    viewer.appendChild(sep);
+  }
+  belowLines.forEach(function (c) { viewer.appendChild(buildLogLine(c, searchTerms)); });
+
+  card.appendChild(viewer);
+
+  // FIX decode pane (only for match line if it's a FIX message)
+  if (matchLine && matchLine.format === 'FIX' && matchLine.fields && matchLine.fields.length) {
+    var decode = document.createElement('div');
+    decode.className = 'fix-decode';
+    decode.innerHTML = '<div class="fix-decode-title">FIX Fields</div>' +
+      '<div class="fix-fields">' +
+      matchLine.fields.map(function (f) {
+        return '<span class="fix-field">' +
+          '<span class="fix-tag">' + esc(f.tag) + '</span>' +
+          '<span class="fix-label">' + esc(f.label) + '</span>' +
+          '<span class="fix-val">' + esc(f.value) + '</span>' +
+          (f.friendly ? '<span class="fix-friendly">(' + esc(f.friendly) + ')</span>' : '') +
+          '</span>';
+      }).join('') +
+      '</div>';
+    card.appendChild(decode);
+  }
+
+  // Structured fields pane (CSV / pipe / tab non-FIX)
+  if (matchLine && (matchLine.format === 'csv' || matchLine.format === 'pipe' || matchLine.format === 'tab')
+      && matchLine.fields && matchLine.fields.length) {
+    var sdecode = document.createElement('div');
+    sdecode.className = 'struct-decode';
+    sdecode.innerHTML = '<div class="fix-decode-title">Fields</div>' +
+      '<div class="struct-fields">' +
+      matchLine.fields.map(function (f, i) {
+        return '<span class="struct-field">[' + (i + 1) + '] ' + esc(String(f)) + '</span>';
+      }).join('') +
+      '</div>';
+    card.appendChild(sdecode);
+  }
+
+  // Copy block button
+  card.querySelector('.copy-match-btn').addEventListener('click', function () {
+    var lines = match.context.map(function (c) {
+      return '[' + c.line_number + '] ' + c.content;
+    }).join('\n');
+    navigator.clipboard.writeText(lines).then(function () {
+      var btn = card.querySelector('.copy-match-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = 'Copy block'; }, 1800);
+    });
+  });
+
+  return card;
+}
+
+function buildLogLine(ctx, searchTerms) {
+  var row = document.createElement('div');
+  row.className = 'log-line ' + ctx.type;
+
+  var ln = document.createElement('div');
+  ln.className = 'ln';
+  ln.textContent = ctx.line_number;
+
+  var lc = document.createElement('div');
+  lc.className = 'lc';
+
+  if (ctx.type === 'match') {
+    lc.innerHTML = highlightTerms(esc(ctx.content), searchTerms);
+  } else {
+    lc.textContent = ctx.content;
+  }
+
+  row.appendChild(ln);
+  row.appendChild(lc);
+  return row;
+}
+
+function highlightTerms(escapedContent, terms) {
+  var result = escapedContent;
+  terms.forEach(function (term) {
+    if (!term.trim()) return;
+    var escaped = term.replace(/[.*+?^$${}()|[\]\\]/g, '\\$&');
+    var rx = new RegExp('(' + escaped + ')', 'gi');
+    result = result.replace(rx, '<mark>$1</mark>');
+  });
+  return result;
+}
+
+function showError(msg) {
+  var c = document.getElementById('results');
+  c.innerHTML = '<div class="error-box">' + esc(msg) + '</div>';
+  c.style.display = 'block';
+}
+
+function esc(str) {
+  if (typeof str !== 'string') return String(str || '');
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>

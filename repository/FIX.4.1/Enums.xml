@@ -1,0 +1,1728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="Enums.xsd" generated="2004-09-03T09:43:12">
+<Enums>
+<Tag>4</Tag>
+<Enum>B</Enum>
+<Description>Buy</Description>
+</Enums>
+<Enums>
+<Tag>4</Tag>
+<Enum>S</Enum>
+<Description>Sell</Description>
+</Enums>
+<Enums>
+<Tag>4</Tag>
+<Enum>T</Enum>
+<Description>Trade</Description>
+</Enums>
+<Enums>
+<Tag>4</Tag>
+<Enum>X</Enum>
+<Description>Cross</Description>
+</Enums>
+<Enums>
+<Tag>5</Tag>
+<Enum>C</Enum>
+<Description>Cancel</Description>
+</Enums>
+<Enums>
+<Tag>5</Tag>
+<Enum>N</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>5</Tag>
+<Enum>R</Enum>
+<Description>Replace</Description>
+</Enums>
+<Enums>
+<Tag>13</Tag>
+<Enum>1</Enum>
+<Description>per share</Description>
+</Enums>
+<Enums>
+<Tag>13</Tag>
+<Enum>2</Enum>
+<Description>percentage</Description>
+</Enums>
+<Enums>
+<Tag>13</Tag>
+<Enum>3</Enum>
+<Description>absolute</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>0</Enum>
+<Description>Stay on offerside</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>1</Enum>
+<Description>Not held</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>2</Enum>
+<Description>Work</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>3</Enum>
+<Description>Go along</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>4</Enum>
+<Description>Over the day</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>5</Enum>
+<Description>Held</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>6</Enum>
+<Description>Participate don&apos;t initiate</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>7</Enum>
+<Description>Strict scale</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>8</Enum>
+<Description>Try to scale</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>9</Enum>
+<Description>Stay on bidside</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>A</Enum>
+<Description>No cross (cross is forbidden)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>B</Enum>
+<Description>OK to cross</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>C</Enum>
+<Description>Call first</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>D</Enum>
+<Description>Percent of volume (indicates that the sender does not want to be all of the volume on the floor vs. a specific percentage)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>E</Enum>
+<Description>Do not increase - DNI</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>F</Enum>
+<Description>Do not reduce - DNR</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>G</Enum>
+<Description>All or none - AON</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>I</Enum>
+<Description>Institutions only</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>L</Enum>
+<Description>Last peg (last sale)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>M</Enum>
+<Description>Mid-price peg (midprice of inside quote)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>N</Enum>
+<Description>Non-negotiable</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>O</Enum>
+<Description>Opening peg</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>P</Enum>
+<Description>Market peg</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>R</Enum>
+<Description>Primary peg (primary market - buy at bid/sell at offer)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>S</Enum>
+<Description>Suspend</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>U</Enum>
+<Description>Customer Display Instruction (Rule11Ac1-1/4)</Description>
+</Enums>
+<Enums>
+<Tag>18</Tag>
+<Enum>V</Enum>
+<Description>Netting (for Forex)</Description>
+</Enums>
+<Enums>
+<Tag>20</Tag>
+<Enum>0</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>20</Tag>
+<Enum>1</Enum>
+<Description>Cancel</Description>
+</Enums>
+<Enums>
+<Tag>20</Tag>
+<Enum>2</Enum>
+<Description>Correct</Description>
+</Enums>
+<Enums>
+<Tag>20</Tag>
+<Enum>3</Enum>
+<Description>Status</Description>
+</Enums>
+<Enums>
+<Tag>21</Tag>
+<Enum>1</Enum>
+<Description>Automated execution order, private, no Broker intervention</Description>
+</Enums>
+<Enums>
+<Tag>21</Tag>
+<Enum>2</Enum>
+<Description>Automated execution order, public, Broker intervention OK</Description>
+</Enums>
+<Enums>
+<Tag>21</Tag>
+<Enum>3</Enum>
+<Description>Manual order, best execution</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>1</Enum>
+<Description>CUSIP</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>2</Enum>
+<Description>SEDOL</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>3</Enum>
+<Description>QUIK</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>4</Enum>
+<Description>ISIN number</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>5</Enum>
+<Description>RIC code</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>6</Enum>
+<Description>ISO Currency Code</Description>
+</Enums>
+<Enums>
+<Tag>22</Tag>
+<Enum>7</Enum>
+<Description>ISO Country Code</Description>
+</Enums>
+<Enums>
+<Tag>24</Tag>
+<Enum>A</Enum>
+<Description>Autex</Description>
+</Enums>
+<Enums>
+<Tag>24</Tag>
+<Enum>B</Enum>
+<Description>Bridge</Description>
+</Enums>
+<Enums>
+<Tag>25</Tag>
+<Enum>H</Enum>
+<Description>High</Description>
+</Enums>
+<Enums>
+<Tag>25</Tag>
+<Enum>L</Enum>
+<Description>Low</Description>
+</Enums>
+<Enums>
+<Tag>25</Tag>
+<Enum>M</Enum>
+<Description>Medium</Description>
+</Enums>
+<Enums>
+<Tag>27</Tag>
+<Enum>L</Enum>
+<Description>Large</Description>
+</Enums>
+<Enums>
+<Tag>27</Tag>
+<Enum>M</Enum>
+<Description>Medium</Description>
+</Enums>
+<Enums>
+<Tag>27</Tag>
+<Enum>S</Enum>
+<Description>Small</Description>
+</Enums>
+<Enums>
+<Tag>28</Tag>
+<Enum>C</Enum>
+<Description>Cancel</Description>
+</Enums>
+<Enums>
+<Tag>28</Tag>
+<Enum>N</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>28</Tag>
+<Enum>R</Enum>
+<Description>Replace</Description>
+</Enums>
+<Enums>
+<Tag>29</Tag>
+<Enum>1</Enum>
+<Description>Agent</Description>
+</Enums>
+<Enums>
+<Tag>29</Tag>
+<Enum>2</Enum>
+<Description>Cross as agent</Description>
+</Enums>
+<Enums>
+<Tag>29</Tag>
+<Enum>3</Enum>
+<Description>Cross as principal</Description>
+</Enums>
+<Enums>
+<Tag>29</Tag>
+<Enum>4</Enum>
+<Description>Principal</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>0</Enum>
+<Description>Heartbeat</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>1</Enum>
+<Description>Test Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>2</Enum>
+<Description>Resend Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>3</Enum>
+<Description>Reject</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>4</Enum>
+<Description>Sequence Reset</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>5</Enum>
+<Description>Logout</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>6</Enum>
+<Description>Indication of Interest</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>7</Enum>
+<Description>Advertisement</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>8</Enum>
+<Description>Execution Report</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>9</Enum>
+<Description>Order Cancel Reject</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>A</Enum>
+<Description>Logon</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>B</Enum>
+<Description>News</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>C</Enum>
+<Description>Email</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>D</Enum>
+<Description>Order - Single</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>E</Enum>
+<Description>Order - List</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>F</Enum>
+<Description>Order Cancel Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>G</Enum>
+<Description>Order Cancel/Replace Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>H</Enum>
+<Description>Order Status Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>J</Enum>
+<Description>Allocation</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>K</Enum>
+<Description>List Cancel Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>L</Enum>
+<Description>List Execute</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>M</Enum>
+<Description>List Status Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>N</Enum>
+<Description>List Status</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>P</Enum>
+<Description>Allocation ACK</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>Q</Enum>
+<Description>Dont Know Trade (DK)</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>R</Enum>
+<Description>Quote Request</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>S</Enum>
+<Description>Quote</Description>
+</Enums>
+<Enums>
+<Tag>35</Tag>
+<Enum>T</Enum>
+<Description>Settlement Instructions</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>0</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>1</Enum>
+<Description>Partially filled</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>2</Enum>
+<Description>Filled</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>3</Enum>
+<Description>Done for day</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>4</Enum>
+<Description>Canceled</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>5</Enum>
+<Description>Replaced</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>6</Enum>
+<Description>Pending Cancel/Replace</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>7</Enum>
+<Description>Stopped</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>8</Enum>
+<Description>Rejected</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>9</Enum>
+<Description>Suspended</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>A</Enum>
+<Description>Pending New</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>B</Enum>
+<Description>Calculated</Description>
+</Enums>
+<Enums>
+<Tag>39</Tag>
+<Enum>C</Enum>
+<Description>Expired</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>1</Enum>
+<Description>Market</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>2</Enum>
+<Description>Limit</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>3</Enum>
+<Description>Stop</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>4</Enum>
+<Description>Stop limit</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>5</Enum>
+<Description>Market on close</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>6</Enum>
+<Description>With or without</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>7</Enum>
+<Description>Limit or better</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>8</Enum>
+<Description>Limit with or without</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>9</Enum>
+<Description>On basis</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>A</Enum>
+<Description>On close</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>B</Enum>
+<Description>Limit on close</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>C</Enum>
+<Description>Forex - Market</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>D</Enum>
+<Description>Previously quoted</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>E</Enum>
+<Description>Previously indicated</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>F</Enum>
+<Description>Forex - Limit</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>G</Enum>
+<Description>Forex - Swap</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>H</Enum>
+<Description>Forex - Previously Quoted</Description>
+</Enums>
+<Enums>
+<Tag>40</Tag>
+<Enum>P</Enum>
+<Description>Pegged (requires ExecInst = L, R, M, P or O)</Description>
+</Enums>
+<Enums>
+<Tag>43</Tag>
+<Enum>N</Enum>
+<Description>Original transmission</Description>
+</Enums>
+<Enums>
+<Tag>43</Tag>
+<Enum>Y</Enum>
+<Description>Possible duplicate</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>A</Enum>
+<Description>Agency single order</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>B</Enum>
+<Description>Short exempt transaction (refer to A type)</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>C</Enum>
+<Description>Program Order, non-index arb, for Member firm/org</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>D</Enum>
+<Description>Program Order, index arb, for Member firm/org</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>E</Enum>
+<Description>Registered Equity Market Maker trades</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>F</Enum>
+<Description>Short exempt transaction (refer to W type)</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>H</Enum>
+<Description>Short exempt transaction (refer to I type)</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>I</Enum>
+<Description>Individual Investor, single order</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>J</Enum>
+<Description>Program Order, index arb, for individual customer</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>K</Enum>
+<Description>Program Order, non-index arb, for individual customer</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>L</Enum>
+<Description>Short exempt transaction for member competing market-maker affiliated with the firm clearing the trade (refer to P and O types)</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>M</Enum>
+<Description>Program Order, index arb, for other member</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>N</Enum>
+<Description>Program Order, non-index arb, for other member</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>O</Enum>
+<Description>Competing dealer trades</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>P</Enum>
+<Description>Principal</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>R</Enum>
+<Description>Competing dealer trades</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>S</Enum>
+<Description>Specialist trades</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>T</Enum>
+<Description>Competing dealer trades</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>U</Enum>
+<Description>Program Order, index arb, for other agency</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>W</Enum>
+<Description>All other orders as agent for other member</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>X</Enum>
+<Description>Short exempt transaction for member competing market-maker not affiliated with the firm clearing the trade (refer to W and T types)</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>Y</Enum>
+<Description>Program Order, non-index arb, for other agency</Description>
+</Enums>
+<Enums>
+<Tag>47</Tag>
+<Enum>Z</Enum>
+<Description>Short exempt transaction for non-member competing market-maker (refer to A and R types)</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>1</Enum>
+<Description>Buy</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>2</Enum>
+<Description>Sell</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>3</Enum>
+<Description>Buy minus</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>4</Enum>
+<Description>Sell plus</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>5</Enum>
+<Description>Sell short</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>6</Enum>
+<Description>Sell short exempt</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>7</Enum>
+<Description>Undisclosed (valid for IOI message only)</Description>
+</Enums>
+<Enums>
+<Tag>54</Tag>
+<Enum>8</Enum>
+<Description>Cross (orders where counterparty is an exchange, valid for all messages except IOIs)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>0</Enum>
+<Description>Day</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>1</Enum>
+<Description>Good Till Cancel  (GTC)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>2</Enum>
+<Description>At the Opening  (OPG)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>3</Enum>
+<Description>Immediate or Cancel  (OC)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>4</Enum>
+<Description>Fill or Kill  (FOK)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>5</Enum>
+<Description>Good Till Crossing  (GTX)</Description>
+</Enums>
+<Enums>
+<Tag>59</Tag>
+<Enum>6</Enum>
+<Description>Good Till Date</Description>
+</Enums>
+<Enums>
+<Tag>61</Tag>
+<Enum>0</Enum>
+<Description>Normal</Description>
+</Enums>
+<Enums>
+<Tag>61</Tag>
+<Enum>1</Enum>
+<Description>Flash</Description>
+</Enums>
+<Enums>
+<Tag>61</Tag>
+<Enum>2</Enum>
+<Description>Background</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>0</Enum>
+<Description>Regular</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>1</Enum>
+<Description>Cash</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>2</Enum>
+<Description>Next Day</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>3</Enum>
+<Description>T+2</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>4</Enum>
+<Description>T+3</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>5</Enum>
+<Description>T+4</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>6</Enum>
+<Description>Future</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>7</Enum>
+<Description>When Issued</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>8</Enum>
+<Description>Sellers Option</Description>
+</Enums>
+<Enums>
+<Tag>63</Tag>
+<Enum>9</Enum>
+<Description>T+ 5</Description>
+</Enums>
+<Enums>
+<Tag>71</Tag>
+<Enum>0</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>71</Tag>
+<Enum>1</Enum>
+<Description>Replace</Description>
+</Enums>
+<Enums>
+<Tag>71</Tag>
+<Enum>2</Enum>
+<Description>Cancel</Description>
+</Enums>
+<Enums>
+<Tag>71</Tag>
+<Enum>3</Enum>
+<Description>Preliminary (without MiscFees and NetMoney)</Description>
+</Enums>
+<Enums>
+<Tag>71</Tag>
+<Enum>4</Enum>
+<Description>Calculated (includes MiscFees and NetMoney)</Description>
+</Enums>
+<Enums>
+<Tag>77</Tag>
+<Enum>C</Enum>
+<Description>Close</Description>
+</Enums>
+<Enums>
+<Tag>77</Tag>
+<Enum>O</Enum>
+<Description>Open</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>0</Enum>
+<Description>regular</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>1</Enum>
+<Description>soft dollar</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>2</Enum>
+<Description>step-in</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>3</Enum>
+<Description>step-out</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>4</Enum>
+<Description>soft-dollar step-in</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>5</Enum>
+<Description>soft-dollar step-out</Description>
+</Enums>
+<Enums>
+<Tag>81</Tag>
+<Enum>6</Enum>
+<Description>plan sponsor</Description>
+</Enums>
+<Enums>
+<Tag>87</Tag>
+<Enum>0</Enum>
+<Description>accepted (successfully processed)</Description>
+</Enums>
+<Enums>
+<Tag>87</Tag>
+<Enum>1</Enum>
+<Description>rejected</Description>
+</Enums>
+<Enums>
+<Tag>87</Tag>
+<Enum>2</Enum>
+<Description>partial accept</Description>
+</Enums>
+<Enums>
+<Tag>87</Tag>
+<Enum>3</Enum>
+<Description>received (received, not yet processed)</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>0</Enum>
+<Description>unknown account(s)</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>1</Enum>
+<Description>incorrect quantity</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>2</Enum>
+<Description>incorrect average price</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>3</Enum>
+<Description>unknown executing broker mnemonic</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>4</Enum>
+<Description>commission difference</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>5</Enum>
+<Description>unknown OrderID</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>6</Enum>
+<Description>unknown ListID</Description>
+</Enums>
+<Enums>
+<Tag>88</Tag>
+<Enum>7</Enum>
+<Description>other</Description>
+</Enums>
+<Enums>
+<Tag>94</Tag>
+<Enum>0</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>94</Tag>
+<Enum>1</Enum>
+<Description>Reply</Description>
+</Enums>
+<Enums>
+<Tag>94</Tag>
+<Enum>2</Enum>
+<Description>Admin Reply</Description>
+</Enums>
+<Enums>
+<Tag>97</Tag>
+<Enum>N</Enum>
+<Description>Original transmission</Description>
+</Enums>
+<Enums>
+<Tag>97</Tag>
+<Enum>Y</Enum>
+<Description>Possible resend</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>0</Enum>
+<Description>None / other</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>1</Enum>
+<Description>PKCS (proprietary)</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>2</Enum>
+<Description>DES (ECB mode)</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>3</Enum>
+<Description>PKCS/DES (proprietary)</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>4</Enum>
+<Description>PGP/DES (defunct)</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>5</Enum>
+<Description>PGP/DES-MD5  (see app note on FIX web site)</Description>
+</Enums>
+<Enums>
+<Tag>98</Tag>
+<Enum>6</Enum>
+<Description>PEM/DES-MD5  (see app note on FIX web site)</Description>
+</Enums>
+<Enums>
+<Tag>102</Tag>
+<Enum>0</Enum>
+<Description>Too late to cancel</Description>
+</Enums>
+<Enums>
+<Tag>102</Tag>
+<Enum>1</Enum>
+<Description>Unknown order</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>0</Enum>
+<Description>Broker option</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>1</Enum>
+<Description>Unknown symbol</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>2</Enum>
+<Description>Exchange closed</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>3</Enum>
+<Description>Order exceeds limit</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>4</Enum>
+<Description>Too late to enter</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>5</Enum>
+<Description>Unknown Order</Description>
+</Enums>
+<Enums>
+<Tag>103</Tag>
+<Enum>6</Enum>
+<Description>Duplicate Order</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>A</Enum>
+<Description>All or none</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>C</Enum>
+<Description>At the close</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>I</Enum>
+<Description>In touch with</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>L</Enum>
+<Description>Limit</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>M</Enum>
+<Description>More behind</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>O</Enum>
+<Description>At the open</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>P</Enum>
+<Description>Taking a position</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>Q</Enum>
+<Description>At the Market (previously called Current Quote)</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>S</Enum>
+<Description>Portfolio show-n</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>T</Enum>
+<Description>Through the day</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>V</Enum>
+<Description>Versus</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>W</Enum>
+<Description>Indication - Working away</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>X</Enum>
+<Description>Crossing opportunity</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>Y</Enum>
+<Description>At the Midpoint</Description>
+</Enums>
+<Enums>
+<Tag>104</Tag>
+<Enum>Z</Enum>
+<Description>Pre-open</Description>
+</Enums>
+<Enums>
+<Tag>113</Tag>
+<Enum>N</Enum>
+<Description>Indicates that party sending message will report trade</Description>
+</Enums>
+<Enums>
+<Tag>113</Tag>
+<Enum>Y</Enum>
+<Description>Indicates that party receiving message must report trade</Description>
+</Enums>
+<Enums>
+<Tag>114</Tag>
+<Enum>N</Enum>
+<Description>Indicates the broker is not required to locate</Description>
+</Enums>
+<Enums>
+<Tag>114</Tag>
+<Enum>Y</Enum>
+<Description>Indicates the broker is responsible for locating the stock</Description>
+</Enums>
+<Enums>
+<Tag>121</Tag>
+<Enum>N</Enum>
+<Description>Do not execute Forex after security trade</Description>
+</Enums>
+<Enums>
+<Tag>121</Tag>
+<Enum>Y</Enum>
+<Description>Execute Forex after security trade</Description>
+</Enums>
+<Enums>
+<Tag>123</Tag>
+<Enum>N</Enum>
+<Description>Sequence Reset, ignore MsgSeqNum</Description>
+</Enums>
+<Enums>
+<Tag>123</Tag>
+<Enum>Y</Enum>
+<Description>Gap Fill message, MsgSeqNum field valid</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>A</Enum>
+<Description>Unknown symbol</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>B</Enum>
+<Description>Wrong side</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>C</Enum>
+<Description>Quantity exceeds order</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>D</Enum>
+<Description>No matching order</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>E</Enum>
+<Description>Price exceeds limit</Description>
+</Enums>
+<Enums>
+<Tag>127</Tag>
+<Enum>Z</Enum>
+<Description>Other</Description>
+</Enums>
+<Enums>
+<Tag>130</Tag>
+<Enum>N</Enum>
+<Description>Not natural</Description>
+</Enums>
+<Enums>
+<Tag>130</Tag>
+<Enum>Y</Enum>
+<Description>Natural</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>1</Enum>
+<Description>Regulatory (e.g. SEC)</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>2</Enum>
+<Description>Tax</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>3</Enum>
+<Description>Local Commission</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>4</Enum>
+<Description>Exchange Fees</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>5</Enum>
+<Description>Stamp</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>6</Enum>
+<Description>Levy</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>7</Enum>
+<Description>Other</Description>
+</Enums>
+<Enums>
+<Tag>139</Tag>
+<Enum>8</Enum>
+<Description>Markup</Description>
+</Enums>
+<Enums>
+<Tag>141</Tag>
+<Enum>N</Enum>
+<Description>No</Description>
+</Enums>
+<Enums>
+<Tag>141</Tag>
+<Enum>Y</Enum>
+<Description>Yes, reset sequence numbers</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>0</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>1</Enum>
+<Description>Partial fill</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>2</Enum>
+<Description>Fill</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>3</Enum>
+<Description>Done for day</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>4</Enum>
+<Description>Cancelled</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>5</Enum>
+<Description>Replace</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>6</Enum>
+<Description>Pending Cancel/Replace</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>7</Enum>
+<Description>Stopped</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>8</Enum>
+<Description>Rejected</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>9</Enum>
+<Description>Suspended</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>A</Enum>
+<Description>Pending New</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>B</Enum>
+<Description>Calculated</Description>
+</Enums>
+<Enums>
+<Tag>150</Tag>
+<Enum>C</Enum>
+<Description>Expired</Description>
+</Enums>
+<Enums>
+<Tag>160</Tag>
+<Enum>0</Enum>
+<Description>Default</Description>
+</Enums>
+<Enums>
+<Tag>160</Tag>
+<Enum>1</Enum>
+<Description>Standing Instructions Provided</Description>
+</Enums>
+<Enums>
+<Tag>160</Tag>
+<Enum>2</Enum>
+<Description>Specific Allocation Account Overriding</Description>
+</Enums>
+<Enums>
+<Tag>160</Tag>
+<Enum>3</Enum>
+<Description>Specific Allocation Account Standing</Description>
+</Enums>
+<Enums>
+<Tag>163</Tag>
+<Enum>C</Enum>
+<Description>Cancel</Description>
+</Enums>
+<Enums>
+<Tag>163</Tag>
+<Enum>N</Enum>
+<Description>New</Description>
+</Enums>
+<Enums>
+<Tag>163</Tag>
+<Enum>R</Enum>
+<Description>Replace</Description>
+</Enums>
+<Enums>
+<Tag>165</Tag>
+<Enum>1</Enum>
+<Description>Brokers Instructions</Description>
+</Enums>
+<Enums>
+<Tag>165</Tag>
+<Enum>2</Enum>
+<Description>Institutions Instructions</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>CED</Enum>
+<Description>CEDEL</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>DTC</Enum>
+<Description>Depository Trust Company</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>EUR</Enum>
+<Description>Euroclear</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>FED</Enum>
+<Description>Federal Book Entry</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>ISO Country Code</Enum>
+<Description>Local Market Settle Location</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>PNY</Enum>
+<Description>Physical</Description>
+</Enums>
+<Enums>
+<Tag>166</Tag>
+<Enum>PTC</Enum>
+<Description>Participant Trust Company</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>BA</Enum>
+<Description>Bankers Acceptance</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CD</Enum>
+<Description>Certificate Of Deposit</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CMO</Enum>
+<Description>Collateralize Mortgage Obligation</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CORP</Enum>
+<Description>Corporate Bond</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CP</Enum>
+<Description>Commercial Paper</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CPP</Enum>
+<Description>Corporate Private Placement</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>CS</Enum>
+<Description>Common Stock</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>FHA</Enum>
+<Description>Federal Housing Authority</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>FHL</Enum>
+<Description>Federal Home Loan</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>FN</Enum>
+<Description>Federal National Mortgage Association</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>FOR</Enum>
+<Description>Foreign Exchange Contract</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>FUT</Enum>
+<Description>Future</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>GN</Enum>
+<Description>Government National Mortgage Association</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>GOVT</Enum>
+<Description>Treasuries + Agency Debenture</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MF</Enum>
+<Description>Mutual Fund</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MIO</Enum>
+<Description>Mortgage Interest Only</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MPO</Enum>
+<Description>Mortgage Principle Only</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MPP</Enum>
+<Description>Mortgage Private Placement</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MPT</Enum>
+<Description>Miscellaneous Pass-Thru</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>MUNI</Enum>
+<Description>Municipal Bond</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>NONE</Enum>
+<Description>No ISITC Security Type</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>OPT</Enum>
+<Description>Option</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>PS</Enum>
+<Description>Preferred Stock</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>RP</Enum>
+<Description>Repurchase Agreement</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>RVRP</Enum>
+<Description>Reverse Repurchase Agreement</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>SL</Enum>
+<Description>Student Loan Marketing Association</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>TD</Enum>
+<Description>Time Deposit</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>USTB</Enum>
+<Description>US Treasury Bill</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>WAR</Enum>
+<Description>Warrant</Description>
+</Enums>
+<Enums>
+<Tag>167</Tag>
+<Enum>ZOO</Enum>
+<Description>Cats, Tigers &amp; Lions (a real code: US Treasury Receipts)</Description>
+</Enums>
+<Enums>
+<Tag>169</Tag>
+<Enum>0</Enum>
+<Description>Other</Description>
+</Enums>
+<Enums>
+<Tag>169</Tag>
+<Enum>1</Enum>
+<Description>DTC SID</Description>
+</Enums>
+<Enums>
+<Tag>169</Tag>
+<Enum>2</Enum>
+<Description>Thomson ALERT</Description>
+</Enums>
+<Enums>
+<Tag>169</Tag>
+<Enum>3</Enum>
+<Description>A Global Custodian (StandInstDbName must be provided)</Description>
+</Enums>
+<Enums>
+<Tag>197</Tag>
+<Enum>0</Enum>
+<Description>F/X Netting</Description>
+</Enums>
+<Enums>
+<Tag>197</Tag>
+<Enum>1</Enum>
+<Description>F/X Swap</Description>
+</Enums>
+<Enums>
+<Tag>201</Tag>
+<Enum>0</Enum>
+<Description>Put</Description>
+</Enums>
+<Enums>
+<Tag>201</Tag>
+<Enum>1</Enum>
+<Description>Call</Description>
+</Enums>
+<Enums>
+<Tag>203</Tag>
+<Enum>0</Enum>
+<Description>Covered</Description>
+</Enums>
+<Enums>
+<Tag>203</Tag>
+<Enum>1</Enum>
+<Description>Uncovered</Description>
+</Enums>
+<Enums>
+<Tag>204</Tag>
+<Enum>0</Enum>
+<Description>Customer</Description>
+</Enums>
+<Enums>
+<Tag>204</Tag>
+<Enum>1</Enum>
+<Description>Firm</Description>
+</Enums>
+<Enums>
+<Tag>206</Tag>
+<Enum>0-9</Enum>
+<Description>single digit version number assigned by exchange following capital adjustments (0=current, 1=prior, 2=prior to 1, etc).</Description>
+</Enums>
+<Enums>
+<Tag>206</Tag>
+<Enum>L</Enum>
+<Description>Long (a.k.a. American)</Description>
+</Enums>
+<Enums>
+<Tag>206</Tag>
+<Enum>S</Enum>
+<Description>Short (a.k.a. European)</Description>
+</Enums>
+<Enums>
+<Tag>208</Tag>
+<Enum>N</Enum>
+<Description>Details should not be communicated</Description>
+</Enums>
+<Enums>
+<Tag>208</Tag>
+<Enum>Y</Enum>
+<Description>Details should be communicated</Description>
+</Enums>
+<Enums>
+<Tag>209</Tag>
+<Enum>1</Enum>
+<Description>Match</Description>
+</Enums>
+<Enums>
+<Tag>209</Tag>
+<Enum>2</Enum>
+<Description>Forward</Description>
+</Enums>
+<Enums>
+<Tag>209</Tag>
+<Enum>3</Enum>
+<Description>Forward and Match</Description>
+</Enums>
+</dataroot>

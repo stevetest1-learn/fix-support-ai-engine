@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIX Support AI Engine</title>
+<style>
+  /* ── FEATURES MODAL ──────────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(5,7,15,.82); backdrop-filter: blur(4px);
+  z-index: 1000; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #13151e; border: 1px solid #2a2d3a; border-radius: 14px;
+  max-width: 860px; width: 100%; max-height: 90vh; overflow-y: auto;
+  padding: 1.75rem; position: relative; animation: popIn .2s ease-out;
+}
+@keyframes popIn { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: none; color: #5a5a7a; font-size: 22px; cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: #fff; }
+.modal-title { font-size: 18px; font-weight: 800; color: #fff; margin: 0 0 4px 0; }
+.modal-sub   { font-size: 12px; color: #5a5a7a; margin: 0 0 1.25rem 0; }
+.tools-grid  { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .85rem; }
+.tool-card   {
+  background: #0f1117; border: 1px solid #22253a; border-radius: 10px;
+  padding: 1rem 1.1rem; text-decoration: none; display: block; transition: border-color .15s;
+}
+.tool-card:hover { border-color: #3b6fea; }
+.tool-icon  { font-size: 22px; margin-bottom: .4rem; }
+.tool-name  { font-size: 13px; font-weight: 700; color: #e8e8e8; margin-bottom: 4px; }
+.tool-desc  { font-size: 12px; color: #6a6a9a; line-height: 1.5; }
+.tool-link  { font-size: 11px; color: #3b6fea; margin-top: 6px; display: inline-block; }
+
+/* ── DONATE MODAL ──────────────────────────────────────── */
+.donate-modal-box {
+  background: #13151e;
+  border: 1px solid #2a2d3a;
+  border-radius: 14px;
+  max-width: 420px;
+  width: 100%;
+  padding: 2rem;
+  position: relative;
+  animation: popIn .2s ease-out;
+  text-align: center;
+}
+.donate-modal-icon {
+  font-size: 40px;
+  margin-bottom: .75rem;
+}
+.donate-modal-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px 0;
+}
+.donate-modal-sub {
+  font-size: 13px;
+  color: #6a6a9a;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+.donate-modal-divider {
+  border: none;
+  border-top: 1px solid #22253a;
+  margin: 1.25rem 0;
+}
+.paypal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffc439;
+  color: #003087;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 13px 32px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  width: 100%;
+  letter-spacing: .2px;
+}
+.paypal-btn:hover {
+  background: #f0b429;
+  transform: translateY(-1px);
+}
+.paypal-btn svg {
+  flex-shrink: 0;
+}
+.donate-modal-note {
+  font-size: 11px;
+  color: #3e4460;
+  margin-top: .85rem;
+}
+body.light-mode .donate-modal-box {
+  background: #ffffff;
+  border-color: #d0d5e8;
+}
+body.light-mode .donate-modal-title { color: #1a1d2e; }
+body.light-mode .donate-modal-divider { border-color: #e8eaf4; }
+body.light-mode .donate-modal-note { color: #9a9ab8; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0f1117; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 4px 0; letter-spacing: 0.3px; }
+  p.site-sub { text-align: center; color: #6a6a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 1200px; margin: 0 auto; align-items: start; }
+
+  .panel { background: #16181f; border: 1px solid #2a2d3a; border-radius: 10px; padding: 1.25rem; }
+  .panel-title { font-size: 14px; font-weight: 700; color: #a0a8c0; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 1rem 0; padding-bottom: 0.6rem; border-bottom: 1px solid #2a2d3a; }
+
+  label { display: block; font-size: 12px; color: #8888a0; margin-bottom: 4px; margin-top: 10px; }
+  label:first-of-type { margin-top: 0; }
+  input[type=text], input[type=password], textarea {
+    width: 100%; background: #0f1117; color: #e8e8e8;
+    border: 1px solid #2a2d3a; border-radius: 6px;
+    padding: 8px 10px; font-size: 13px; font-family: monospace;
+  }
+  input[type=text]:focus, input[type=password]:focus, textarea:focus {
+    outline: none; border-color: #3b6fea;
+  }
+  textarea { resize: vertical; min-height: 90px; font-family: monospace; }
+
+  .btn { margin-top: 14px; width: 100%; background: #3b6fea; color: #fff; border: none; padding: 9px 0; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 0.2px; }
+  .btn:hover { background: #2f5bd0; }
+  .btn-green { background: #16a34a; }
+  .btn-green:hover { background: #15803d; }
+
+  #results { margin-top: 1rem; }
+  .summary { background: #1a1d27; border: 1px solid #2a2d3a; border-radius: 7px; padding: 10px 14px; margin-bottom: 0.75rem; }
+  .summary p { margin: 3px 0; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 0.5rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #1e2130; vertical-align: top; }
+  th { color: #6a6a8a; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  tr.unknown-row { background: #1e1810; }
+  em { color: #6a6a8a; font-style: italic; font-size: 11px; }
+  .error-text { color: #f87171; font-size: 13px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: #3b6fea; margin: 14px 0 8px 0;
+    padding: 6px 8px; background: #1a2240; border-left: 3px solid #3b6fea;
+    border-radius: 0 4px 4px 0;
+  }
+
+  #session-output { margin-top: 1rem; display: none; }
+  .session-block {
+    background: #0f1117; border: 1px solid #2a2d3a; border-radius: 7px;
+    padding: 1rem; font-family: monospace; font-size: 12px; line-height: 1.8;
+    white-space: pre-wrap; word-break: break-all; color: #c8d8f0;
+  }
+  .copy-bar { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+  .copy-btn-sm { font-size: 11px; color: #6a6a9a; background: none; border: 1px solid #2a2d3a; border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+  .copy-btn-sm:hover { color: #fff; border-color: #3b6fea; }
+
+  footer { text-align: center; color: #444455; font-size: 11px; margin-top: 2rem; }
+
+  @media (max-width: 780px) {
+    .panels { grid-template-columns: 1fr; }
+  }
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+</style>
+</head>
+<body>
+<nav style="max-width:1200px;margin:0 auto 1.25rem auto;display:flex;gap:.75rem;flex-wrap:wrap">
+  <a href="index.html"         style="font-size:12px;color:#3b6fea;text-decoration:none;border:1px solid #3b6fea;border-radius:6px;padding:5px 12px">FIX Tools Home</a>
+  <a href="latency.html"       style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Latency Analyser</a>
+  <a href="trade-latency.html" style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Trade Latency</a>
+  <a href="log-search.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Log Search</a>
+  <a href="market-data.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Market Data</a>
+  <a href="stp.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">STP Generator</a>
+</nav>
+<button class="nav-btn donate-btn"
+        onclick="document.getElementById('donateModal').classList.add('open')">
+  ❤️ Donate
+</button>
+<!-- Features popup button -->
+  <button class="nav-btn features-btn"
+          onclick="document.getElementById('featuresModal').classList.add('open')">
+    ✨ Features
+  </button>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">Powered by AI to assist with FIX protocol issues</p>
+
+<div class="panels">
+
+  <!-- LEFT PANEL: FIX PARSER -->
+  <div class="panel">
+    <p class="panel-title">FIX Message Parser</p>
+    <label>Paste a pipe-delimited FIX message (any version, 4.0 – 5.0 SP2)</label>
+    <textarea id="fixInput" placeholder="8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD001|55=AAPL|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|"></textarea>
+    <button class="btn" id="parseBtn">Parse FIX Message</button>
+    <div id="results"></div>
+  </div>
+
+  <!-- RIGHT PANEL: FIX SESSION GENERATOR -->
+  <div class="panel">
+    <p class="panel-title">FIX Session Generator</p>
+
+    <div class="section-label">Market Data Session</div>
+    <label>IP Address</label>
+    <input type="text" id="md-ip" placeholder="e.g. 192.168.1.100">
+    <label>Port</label>
+    <input type="text" id="md-port" placeholder="e.g. 9000">
+    <label>SenderCompID</label>
+    <input type="text" id="md-sender" placeholder="e.g. CLIENT_MD">
+    <label>TargetCompID</label>
+    <input type="text" id="md-target" placeholder="e.g. BROKER_MD">
+
+    <div class="section-label">Order Session</div>
+    <label>SenderCompID</label>
+    <input type="text" id="ord-sender" placeholder="e.g. CLIENT_ORD">
+    <label>TargetCompID</label>
+    <input type="text" id="ord-target" placeholder="e.g. BROKER_ORD">
+    <label>Username (Trading)</label>
+    <input type="text" id="ord-user" placeholder="e.g. tradeuser01">
+    <label>Password (Trading)</label>
+    <input type="password" id="ord-pass" placeholder="e.g. ••••••••">
+    <label>Account (Tag 1)</label>
+    <input type="text" id="ord-account" placeholder="e.g. ACC123456">
+
+    <button class="btn btn-green" id="generateBtn">Generate Session Config</button>
+
+    <div id="session-output">
+      <div class="copy-bar">
+        <button class="copy-btn-sm" id="copyBtn">Copy to Clipboard</button>
+      </div>
+      <div class="session-block" id="session-block"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var API_ENDPOINT = "${api_endpoint}/parse";
+
+document.getElementById("parseBtn").addEventListener("click", function () {
+  var msg = document.getElementById("fixInput").value.trim();
+  var resultsDiv = document.getElementById("results");
+  if (!msg) {
+    resultsDiv.innerHTML = "<p class='error-text'>Please enter a FIX message.</p>";
+    return;
+  }
+  resultsDiv.innerHTML = "<p style='color:#6a6a8a;font-size:13px;'>Parsing...</p>";
+
+  fetch(API_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  })
+  .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+  .then(function (result) {
+    if (!result.ok) {
+      resultsDiv.innerHTML = "<p class='error-text'>" + esc(result.data.error || "Error parsing message") + "</p>";
+      return;
+    }
+    renderResults(result.data);
+  })
+  .catch(function (err) {
+    resultsDiv.innerHTML = "<p class='error-text'>Request failed: " + esc(err.message) + "</p>";
+  });
+});
+
+function renderResults(data) {
+  var html = "<div class='summary'>";
+  html += "<p><strong>Message Type:</strong> " + esc(data.msg_type_label) + "</p>";
+  html += "<p><strong>FIX Version:</strong> " + esc(data.fix_version_detected) + "</p>";
+  if (data.crypto_venue) {
+    html += "<p><strong>Crypto Venue:</strong> <span style='display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:4px;background:#1a2a1a;color:#4ade80;border:1px solid #22c55e;margin-left:4px'>" +
+      esc(data.crypto_venue) + "</span>";
+    if (data.crypto_venue_signals && data.crypto_venue_signals.length) {
+      html += " <span style='font-size:11px;color:#6a6a8a'>&mdash; " + esc(data.crypto_venue_signals[0]) + "</span>";
+    }
+    html += "</p>";
+  }
+  html += "<p><strong>Asset Class:</strong> " + esc(data.asset_class) + (data.asset_detail ? " (" + esc(data.asset_detail) + ")" : "") + "</p>";
+  html += "</div>";
+  
+
+  html += "<table><thead><tr><th>Tag</th><th>Field Name</th><th>Value</th><th>Description</th></tr></thead><tbody>";
+  data.tags.forEach(function (t) {
+    var rowClass = t.known ? "" : "unknown-row";
+    html += "<tr class='" + rowClass + "'>";
+    html += "<td>" + esc(t.tag) + "</td>";
+    html += "<td>" + esc(t.field_name) + "</td>";
+    html += "<td>" + esc(t.value) + (t.symbol_annotation ? "<br><em>" + esc(t.symbol_annotation) + "</em>" : "") + "</td>";
+    html += "<td>" + esc(t.value_definition || "") + "</td>";
+    html += "</tr>";
+  });
+  html += "</tbody></table>";
+
+  document.getElementById("results").innerHTML = html;
+}
+
+document.getElementById("generateBtn").addEventListener("click", function () {
+  var mdIp      = v("md-ip");
+  var mdPort    = v("md-port");
+  var mdSender  = v("md-sender");
+  var mdTarget  = v("md-target");
+  var ordSender = v("ord-sender");
+  var ordTarget = v("ord-target");
+  var ordUser   = v("ord-user");
+  var ordPass   = v("ord-pass");
+  var ordAcct   = v("ord-account");
+
+  var now = new Date().toISOString().replace("T", " ").substring(0, 19) + " UTC";
+
+  var output =
+    "==========================================================\n" +
+    "  FIX CONNECTIVITY DETAILS\n" +
+    "  Generated: " + now + "\n" +
+    "==========================================================\n\n" +
+
+    "----------------------------------------------------------\n" +
+    "  MARKET DATA SESSION\n" +
+    "----------------------------------------------------------\n" +
+    "  Host / IP Address : " + (mdIp      || "(not provided)") + "\n" +
+    "  Port              : " + (mdPort    || "(not provided)") + "\n" +
+    "  SenderCompID      : " + (mdSender  || "(not provided)") + "\n" +
+    "  TargetCompID      : " + (mdTarget  || "(not provided)") + "\n\n" +
+
+    "----------------------------------------------------------\n" +
+    "  ORDER SESSION\n" +
+    "----------------------------------------------------------\n" +
+    "  SenderCompID      : " + (ordSender || "(not provided)") + "\n" +
+    "  TargetCompID      : " + (ordTarget || "(not provided)") + "\n" +
+    "  Username          : " + (ordUser   || "(not provided)") + "\n" +
+    "  Password          : " + (ordPass   ? maskPass(ordPass) : "(not provided)") + "\n" +
+    "  Account (Tag 1)   : " + (ordAcct   || "(not provided)") + "\n\n" +
+
+    "==========================================================\n" +
+    "  SESSION DEFAULTS\n" +
+    "==========================================================\n" +
+    "  BeginString       : FIX.4.2\n" +
+    "  HeartBtInt        : 30 (seconds)\n" +
+    "  ConnectionType    : initiator\n" +
+    "  ResetOnLogon      : Y\n" +
+    "  ResetOnLogout     : Y\n" +
+    "  ResetOnDisconnect : Y\n\n" +
+    "  Please confirm the above details with your technical\n" +
+    "  team before initiating FIX session setup.\n" +
+    "==========================================================";
+
+  document.getElementById("session-block").textContent = output;
+  document.getElementById("session-output").style.display = "block";
+});
+
+document.getElementById("copyBtn").addEventListener("click", function () {
+  var text = document.getElementById("session-block").textContent;
+  navigator.clipboard.writeText(text).then(function () {
+    var btn = document.getElementById("copyBtn");
+    btn.textContent = "Copied!";
+    setTimeout(function () { btn.textContent = "Copy to Clipboard"; }, 1800);
+  });
+});
+
+function v(id) { return document.getElementById(id).value.trim(); }
+function maskPass(p) { return p.substring(0, 2) + "*".repeat(Math.max(p.length - 2, 3)); }
+function esc(str) {
+  if (typeof str !== "string") return str;
+  return str.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+  // ── QR Code ─────────────────────────────────────────────────
+// Replace this URL with your PayPal.me, Venmo, or Cash App link
+var DONATE_URL = 'https://www.paypal.com/ncp/payment/LWWLG6BHRDH58';   // ← REPLACE THIS
+
+new QRCode(document.getElementById('qrcode'), {
+  text:   DONATE_URL,
+  width:  110,
+  height: 110,
+  colorDark:  '#000000',
+  colorLight: '#ffffff',
+  correctLevel: QRCode.CorrectLevel.H,
+});
+
+// ── Close Features modal on ESC ──────────────────────────────
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    document.getElementById('featuresModal').classList.remove('open');
+    document.getElementById('donateModal').classList.remove('open');
+  }
+});
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+<!-- FEATURES MODAL -->
+<div class="modal-overlay" id="featuresModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('featuresModal').classList.remove('open')">&times;</button>
+    <div class="modal-title">FIX Support AI Engine</div>
+    <div class="modal-sub">Seven production-grade FIX tools — free, no login required · Built by Steve Hatfield</div>
+    <div class="tools-grid">
+      <a class="tool-card" href="index.html">
+        <div class="tool-icon">🔍</div>
+        <div class="tool-name">FIX Message Parser</div>
+        <div class="tool-desc">Decode any pipe-delimited FIX message, versions 4.0 through 5.0 SP2, against the official FIX Trading Community Repository. Native Coinbase, Kraken and Talos crypto dialect support.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="index.html#session">
+        <div class="tool-icon">🔌</div>
+        <div class="tool-name">FIX Session Generator</div>
+        <div class="tool-desc">Fill in Market Data and Order Session parameters — IP, Port, SenderCompID, TargetCompID, Username, Password, Account — and generate a copy-ready connectivity spec for client onboarding in seconds.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="latency.html">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">FIX Latency Analyser</div>
+        <div class="tool-desc">Upload a FIX log file and plot session-level latency (log timestamp vs SendingTime, tag 52) per CompID pair. Min/Max/Mean/Median/P95 stats and downloadable results.csv.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="trade-latency.html">
+        <div class="tool-icon">⚡</div>
+        <div class="tool-name">Trade Latency Analyser</div>
+        <div class="tool-desc">Matches every New Order Single (35=D) to its fill (35=8, 150=1/2) via ClOrdID and plots round-trip execution latency per venue — scatter chart and box plot distribution in one view.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="log-search.html">
+        <div class="tool-icon">🔎</div>
+        <div class="tool-name">OMS / EMS Log Search</div>
+        <div class="tool-desc">Upload any OMS or EMS log file — pipe, comma, tab or plain text. Search any term and see 10 lines of context around every match. FIX messages auto-decoded inline. Built for the war room.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="market-data.html">
+        <div class="tool-icon">📈</div>
+        <div class="tool-name">Live Coinbase Market Data</div>
+        <div class="tool-desc">Real-time Bid and Ask prices for BTC, ETH, LTC, SOL and more via the Coinbase Exchange public REST API. Auto-refresh with price flash animations and full 24hr stats.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="stp.html">
+        <div class="tool-icon">🔄</div>
+        <div class="tool-name">STP Generator</div>
+        <div class="tool-desc">Paste a 35=8 fill (150=F, 39=1/2) and instantly generate the complete 35=AE Trade Capture Report for clearing. Full field derivation map. Settlement break risk flagging. BodyLength and CheckSum calculated.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+    </div>
+  </div>
+</div>
+<!-- DONATE MODAL -->
+<div class="modal-overlay" id="donateModal"
+     onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box donate-modal-box">
+    <button class="modal-close"
+            onclick="document.getElementById('donateModal').classList.remove('open')">
+      &times;
+    </button>
+
+    <div class="donate-modal-icon">❤️</div>
+    <div class="donate-modal-title">Support the FIX Support AI Engine</div>
+    <div class="donate-modal-sub">
+      This platform is free for everyone in the capital markets community —
+      FIX engineers, traders, quants, support teams, and students.
+      If these tools have saved you time or helped you in production,
+      please consider a small donation to keep the project running.
+    </div>
+
+    <hr class="donate-modal-divider">
+
+    <a class="paypal-btn"
+       href="https://www.paypal.com/ncp/payment/LWWLG6BHRDH58"
+       target="_blank"
+       rel="noopener noreferrer">
+      <!-- PayPal logo SVG -->
+      <svg width="20" height="24" viewBox="0 0 24 24" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.643-8.993 6.643H9.39l-1.167 7.4h3.43c.524 0 .968-.382 1.05-.9l.044-.232.842-5.34.054-.296a1.062 1.062 0 0 1 1.05-.9h.662c4.293 0 7.657-1.743 8.64-6.788.412-2.11.198-3.874-.773-5.3z"
+              fill="#003087"/>
+      </svg>
+      Donate via PayPal
+    </a>
+
+    <div class="donate-modal-note">
+      You will be taken to PayPal's secure website to complete your donation.
+      Every contribution is appreciated and goes directly toward server costs
+      and continued development of the FIX Support AI Engine.
+    </div>
+  </div>
+</div>
+</body>
+</html>

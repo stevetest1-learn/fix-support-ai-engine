@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0f1117; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  nav { max-width: 960px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; }
+  nav a:hover { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 4px 0; }
+  p.site-sub { text-align: center; color: #6a6a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  .card { background: #16181f; border: 1px solid #2a2d3a; border-radius: 10px; padding: 1.25rem; max-width: 960px; margin: 0 auto 1.25rem auto; }
+  .card-title { font-size: 13px; font-weight: 700; color: #a0a8c0; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 1rem 0; padding-bottom: .6rem; border-bottom: 1px solid #2a2d3a; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: 1rem; }
+  .info-box { background: #0f1117; border: 1px solid #2a2d3a; border-radius: 7px; padding: .75rem 1rem; }
+  .info-box p { margin: 3px 0; font-size: 12px; color: #8888a0; }
+  .info-box .tag { font-family: monospace; color: #3b6fea; font-weight: 600; }
+
+  .upload-area { border: 2px dashed #2a2d3a; border-radius: 8px; padding: 2rem 1rem; text-align: center; cursor: pointer; transition: border-color .2s; }
+  .upload-area:hover, .upload-area.drag-over { border-color: #3b6fea; }
+  .upload-area p { margin: 0; color: #6a6a9a; font-size: 13px; }
+  .upload-area .filename { color: #e8e8e8; font-weight: 600; margin-top: 6px; font-family: monospace; font-size: 13px; }
+  #fileInput { display: none; }
+
+  .btn { display: block; width: 100%; margin-top: 14px; background: #3b6fea; color: #fff; border: none; padding: 10px 0; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn:hover { background: #2f5bd0; }
+  .btn:disabled { background: #2a2d3a; color: #6a6a8a; cursor: not-allowed; }
+  .note-text { font-size: 11px; color: #6a6a7a; margin-top: 8px; text-align: center; }
+
+  #spinner { display: none; text-align: center; padding: 1.5rem; color: #6a6a9a; font-size: 13px; }
+  .dot { animation: blink 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink {
+    0%   { opacity: 0; }
+    40%  { opacity: 1; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  #results { display: none; }
+  .chart-wrap { text-align: center; }
+  .chart-wrap img { max-width: 100%; border-radius: 8px; border: 1px solid #2a2d3a; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #1e2130; }
+  th { color: #6a6a8a; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  td.num { text-align: right; font-family: monospace; }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+  .badge-fill    { background: #14532d; color: #4ade80; }
+  .badge-partial { background: #1c1917; color: #f59e0b; }
+
+  .terminal { background: #0a0c12; border: 1px solid #2a2d3a; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 12px; line-height: 1.7; white-space: pre-wrap; color: #4ade80; overflow-x: auto; }
+  .copy-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .copy-btn-sm { font-size: 11px; color: #6a6a9a; background: none; border: 1px solid #2a2d3a; border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+  .copy-btn-sm:hover { color: #fff; border-color: #3b6fea; }
+  .dl-btn { font-size: 12px; background: #16a34a; color: #fff; border: none; border-radius: 5px; padding: 5px 14px; cursor: pointer; }
+  .dl-btn:hover { background: #15803d; }
+  .error-box { background: #2a1518; border: 1px solid #5c2326; border-radius: 7px; padding: 10px 14px; color: #f87171; font-size: 13px; }
+  footer { text-align: center; color: #444455; font-size: 11px; margin-top: 2rem; }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+  }
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html" class="active">Trade Latency</a>
+  <a href="log-search.html">Log Search</a>
+  <a href="market-data.html">Market Data</a>
+  <a href="stp.html">STP Generator</a>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Trade Latency Analyser</h1>
+<p class="site-sub">Upload a FIX log &mdash; orders and fills are matched by ClOrdID to plot round-trip trade latency per venue pair</p>
+
+<!-- HOW IT WORKS ─────────────────────────────────────────────────────────── -->
+<div class="card">
+  <p class="card-title">How Trade Latency Is Calculated</p>
+  <div class="info-grid">
+    <div class="info-box">
+      <p><strong>Order Sent</strong></p>
+      <p>Message type <span class="tag">35=D</span> (New Order Single)</p>
+      <p>Timestamp: <span class="tag">Tag 52</span> SendingTime</p>
+      <p>Keyed by: <span class="tag">Tag 11</span> ClOrdID</p>
+    </div>
+    <div class="info-box">
+      <p><strong>Fill Received</strong></p>
+      <p>Message type <span class="tag">35=8</span> (Execution Report)</p>
+      <p>ExecType <span class="tag">150=1</span> (Partial Fill) or <span class="tag">150=2</span> (Fill)</p>
+      <p>OrdStatus <span class="tag">39=1</span> or <span class="tag">39=2</span></p>
+    </div>
+  </div>
+  <p style="font-size:12px;color:#6a6a8a;margin:0;text-align:center">
+    Trade Latency (ms) = Fill <strong>SendingTime</strong> (tag 52) − Order <strong>SendingTime</strong> (tag 52)  ·  Matched via ClOrdID (tag 11)
+  </p>
+</div>
+
+<!-- UPLOAD ──────────────────────────────────────────────────────────────── -->
+<div class="card">
+  <p class="card-title">Upload FIX Log File</p>
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept=".log,.txt,.fix,.out">
+    <p>Drag &amp; drop your FIX log file here, or click to browse</p>
+    <p id="fileName" class="filename"></p>
+  </div>
+  <button class="btn" id="analyseBtn" disabled>Analyse Trade Latency</button>
+  <p class="note-text">Max file size: 4 MB  ·  Log must contain timestamped 35=D and 35=8 messages sharing a ClOrdID (tag 11)</p>
+</div>
+
+<div id="spinner">Matching orders and fills<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+
+<!-- RESULTS ─────────────────────────────────────────────────────────────── -->
+<div id="results">
+
+  <!-- Chart -->
+  <div class="card">
+    <p class="card-title">Trade Latency Chart</p>
+    <div class="chart-wrap"><img id="chartImg" src="" alt="Trade Latency Chart"></div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="card">
+    <div class="copy-bar">
+      <p class="card-title" style="margin:0;border:none;padding:0">Summary Statistics</p>
+      <button class="dl-btn" id="csvBtn">Download results.csv</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Pair (Sender → Target)</th>
+          <th style="text-align:right">Trades</th>
+          <th style="text-align:right">Min (ms)</th>
+          <th style="text-align:right">Max (ms)</th>
+          <th style="text-align:right">Mean (ms)</th>
+          <th style="text-align:right">Median (ms)</th>
+          <th style="text-align:right">P95 (ms)</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Trade Detail Table -->
+  <div class="card">
+    <p class="card-title">Matched Order / Fill Detail</p>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>ClOrdID</th>
+            <th>Pair</th>
+            <th>Symbol</th>
+            <th>Side</th>
+            <th>Type</th>
+            <th>Order Sent</th>
+            <th>Fill Received</th>
+            <th style="text-align:right">Latency (ms)</th>
+            <th style="text-align:right">Last Px</th>
+            <th style="text-align:right">Last Qty</th>
+          </tr>
+        </thead>
+        <tbody id="tradeBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div class="card">
+    <div class="copy-bar">
+      <p class="card-title" style="margin:0;border:none;padding:0">Terminal Output</p>
+      <button class="copy-btn-sm" id="copyTerminal">Copy</button>
+    </div>
+    <div class="terminal" id="terminal"></div>
+  </div>
+
+</div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var API = '${api_endpoint}/trade-latency';
+var csvData = '';
+var selectedFile = null;
+
+// ── File selection ─────────────────────────────────────────────────────────
+var uploadArea = document.getElementById('uploadArea');
+var fileInput  = document.getElementById('fileInput');
+
+uploadArea.addEventListener('click', function () { fileInput.click(); });
+uploadArea.addEventListener('dragover',  function (e) { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', function ()  { uploadArea.classList.remove('drag-over'); });
+uploadArea.addEventListener('drop', function (e) {
+  e.preventDefault();
+  uploadArea.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', function () {
+  if (fileInput.files.length) setFile(fileInput.files[0]);
+});
+
+function setFile(f) {
+  if (f.size > 4 * 1024 * 1024) { alert('File exceeds 4 MB limit. Please use a smaller sample.'); return; }
+  selectedFile = f;
+  document.getElementById('fileName').textContent = f.name + '  (' + (f.size / 1024).toFixed(1) + ' KB)';
+  document.getElementById('analyseBtn').disabled = false;
+}
+
+// ── Analyse ────────────────────────────────────────────────────────────────
+document.getElementById('analyseBtn').addEventListener('click', function () {
+  if (!selectedFile) return;
+  document.getElementById('results').style.display  = 'none';
+  document.getElementById('spinner').style.display  = 'block';
+  document.getElementById('analyseBtn').disabled    = true;
+
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var b64 = btoa(new Uint8Array(e.target.result)
+      .reduce(function (d, b) { return d + String.fromCharCode(b); }, ''));
+
+    fetch(API, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ content: b64 })
+    })
+    .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+    .then(function (result) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('analyseBtn').disabled   = false;
+      if (!result.ok) { showError(result.data.error || 'Unknown error.'); return; }
+      renderResults(result.data);
+    })
+    .catch(function (err) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('analyseBtn').disabled   = false;
+      showError('Request failed: ' + err.message);
+    });
+  };
+  reader.readAsArrayBuffer(selectedFile);
+});
+
+function showError(msg) {
+  document.getElementById('results').innerHTML = '<div class="card error-box">' + esc(msg) + '</div>';
+  document.getElementById('results').style.display = 'block';
+}
+
+function renderResults(data) {
+  // Chart
+  document.getElementById('chartImg').src = 'data:image/png;base64,' + data.plot_png_b64;
+
+  // Summary table
+  var sb = document.getElementById('summaryBody');
+  sb.innerHTML = '';
+  (data.summary || []).forEach(function (s) {
+    sb.innerHTML +=
+      '<tr><td>' + esc(s.pair) + '</td>' +
+      '<td class="num">' + s.count     + '</td>' +
+      '<td class="num">' + s.min_ms    + '</td>' +
+      '<td class="num">' + s.max_ms    + '</td>' +
+      '<td class="num">' + s.mean_ms   + '</td>' +
+      '<td class="num">' + s.median_ms + '</td>' +
+      '<td class="num">' + s.p95_ms    + '</td></tr>';
+  });
+
+  // Trade detail table (show up to 200 rows)
+  var tb = document.getElementById('tradeBody');
+  tb.innerHTML = '';
+  var trades = (data.trades || []).slice(0, 200);
+  trades.forEach(function (t) {
+    var isFull  = t.exec_type === 'Fill';
+    var badge   = isFull
+      ? '<span class="badge badge-fill">Fill</span>'
+      : '<span class="badge badge-partial">Partial</span>';
+    tb.innerHTML +=
+      '<tr>' +
+      '<td style="font-family:monospace;font-size:11px">' + esc(t.cl_ord_id || '') + '</td>' +
+      '<td>' + esc(t.pair)        + '</td>' +
+      '<td>' + esc(t.symbol)      + '</td>' +
+      '<td>' + esc(t.side)        + '</td>' +
+      '<td>' + badge              + '</td>' +
+      '<td style="font-family:monospace;font-size:11px">' + esc(t.order_ts)  + '</td>' +
+      '<td style="font-family:monospace;font-size:11px">' + esc(t.fill_ts)   + '</td>' +
+      '<td class="num"><strong>' + t.latency_ms  + '</strong></td>' +
+      '<td class="num">' + esc(t.last_px     || '') + '</td>' +
+      '<td class="num">' + esc(t.last_shares || '') + '</td>' +
+      '</tr>';
+  });
+  if (data.trades && data.trades.length > 200) {
+    tb.innerHTML += '<tr><td colspan="10" style="color:#6a6a8a;text-align:center;font-size:11px">' +
+      'Showing first 200 of ' + data.trades.length + ' trades. Download CSV for full dataset.</td></tr>';
+  }
+
+  // Terminal
+  document.getElementById('terminal').textContent = data.terminal_output || '';
+
+  // CSV
+  csvData = data.csv_content || '';
+  document.getElementById('results').style.display = 'block';
+}
+
+// ── CSV download ───────────────────────────────────────────────────────────
+document.getElementById('csvBtn').addEventListener('click', function () {
+  if (!csvData) return;
+  var a = document.createElement('a');
+  a.href     = URL.createObjectURL(new Blob([csvData], { type: 'text/csv' }));
+  a.download = 'results.csv';
+  a.click();
+});
+
+// ── Copy terminal ──────────────────────────────────────────────────────────
+document.getElementById('copyTerminal').addEventListener('click', function () {
+  navigator.clipboard.writeText(document.getElementById('terminal').textContent)
+    .then(function () {
+      var b = document.getElementById('copyTerminal');
+      b.textContent = 'Copied!';
+      setTimeout(function () { b.textContent = 'Copy'; }, 1800);
+    });
+});
+
+function esc(str) {
+  if (typeof str !== 'string') return str || '';
+  return str.replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>

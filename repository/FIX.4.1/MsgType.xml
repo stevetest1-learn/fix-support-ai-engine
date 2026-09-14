@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="MsgType.xsd" generated="2004-09-03T09:43:12">
+<MsgType>
+<MsgType>0</MsgType>
+<MessageName>Heartbeat</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>1</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>1</MsgType>
+<MessageName>Test Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>2</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>2</MsgType>
+<MessageName>Resend Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>3</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>3</MsgType>
+<MessageName>Reject</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>4</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>4</MsgType>
+<MessageName>Sequence Reset</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>5</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>5</MsgType>
+<MessageName>Logout</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>6</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>6</MsgType>
+<MessageName>Indication of Interest</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Indication</Category>
+<MsgID>7</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>7</MsgType>
+<MessageName>Advertisement</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Indication</Category>
+<MsgID>8</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>8</MsgType>
+<MessageName>Execution Report</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>9</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>9</MsgType>
+<MessageName>Order Cancel Reject</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>10</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>A</MsgType>
+<MessageName>Logon</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Session</Category>
+<MsgID>11</MsgID>
+<Section>Session</Section>
+</MsgType>
+<MsgType>
+<MsgType>B</MsgType>
+<MessageName>News</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>EventCommunication</Category>
+<MsgID>12</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>C</MsgType>
+<MessageName>Email</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>EventCommunication</Category>
+<MsgID>13</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>D</MsgType>
+<MessageName>Order - Single</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>14</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>E</MsgType>
+<MessageName>Order - List</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>ProgramTrading</Category>
+<MsgID>15</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>F</MsgType>
+<MessageName>Order Cancel Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>16</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>G</MsgType>
+<MessageName>Order Cancel/Replace Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>17</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>H</MsgType>
+<MessageName>Order Status Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>18</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>J</MsgType>
+<MessageName>Allocation</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Allocation</Category>
+<MsgID>19</MsgID>
+<Section>Post Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>K</MsgType>
+<MessageName>List Cancel Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>ProgramTrading</Category>
+<MsgID>20</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>L</MsgType>
+<MessageName>List Execute</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>ProgramTrading</Category>
+<MsgID>21</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>M</MsgType>
+<MessageName>List Status Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>ProgramTrading</Category>
+<MsgID>22</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>N</MsgType>
+<MessageName>List Status</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>ProgramTrading</Category>
+<MsgID>23</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>P</MsgType>
+<MessageName>Allocation ACK</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>Allocation</Category>
+<MsgID>24</MsgID>
+<Section>Post Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>Q</MsgType>
+<MessageName>Don’t Know Trade (DK)</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SingleGeneralOrderHandling</Category>
+<MsgID>25</MsgID>
+<Section>Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>R</MsgType>
+<MessageName>Quote Request</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>QuotationNegotiation</Category>
+<MsgID>26</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>S</MsgType>
+<MessageName>Quote</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>QuotationNegotiation</Category>
+<MsgID>27</MsgID>
+<Section>Pre Trade</Section>
+</MsgType>
+<MsgType>
+<MsgType>T</MsgType>
+<MessageName>Settlement Instructions</MessageName>
+<ComponentType>Message</ComponentType>
+<Category>SettlementInstruction</Category>
+<MsgID>28</MsgID>
+<Section>Post Trade</Section>
+</MsgType>
+</dataroot>

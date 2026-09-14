@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STP Generator — FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0a0c12; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  nav { max-width: 1100px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; transition: all .15s; }
+  nav a:hover  { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 3px 0; }
+  p.site-sub    { text-align: center; color: #5a5a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  /* FLOW DIAGRAM */
+  .flow-bar { max-width: 1100px; margin: 0 auto 1.25rem auto; display: flex; align-items: center; justify-content: center; gap: .75rem; flex-wrap: wrap; }
+  .flow-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .fp-exec  { background: #1a2240; color: #7ab8f5; border: 1px solid #2a3a5a; }
+  .fp-arrow { color: #3e4460; font-size: 18px; }
+  .fp-stp   { background: #0d2010; color: #4ade80; border: 1px solid #166534; }
+  .fp-clear { background: #1a1230; color: #c084fc; border: 1px solid #3a1a6a; }
+
+  /* TWO COLUMN LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 1100px; margin: 0 auto 1.25rem auto; align-items: start; }
+  .panel { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; }
+  .panel.exec-panel { border-color: #22253a; }
+  .panel.ae-panel   { border-color: #166534; }
+  .panel-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 .85rem 0; padding-bottom: .6rem; border-bottom: 1px solid #22253a; }
+  .panel.exec-panel .panel-title { color: #7ab8f5; }
+  .panel.ae-panel   .panel-title { color: #4ade80; }
+
+  /* INPUT */
+  textarea { width: 100%; min-height: 110px; background: #0a0c12; color: #c8d8f0; border: 1px solid #22253a; border-radius: 7px; padding: 10px 12px; font-family: 'Menlo','Consolas','Courier New',monospace; font-size: 12px; line-height: 1.6; resize: vertical; }
+  textarea:focus { outline: none; border-color: #3b6fea; }
+
+  .sample-btn { font-size: 11px; color: #5a5a7a; background: none; border: 1px solid #22253a; border-radius: 4px; padding: 3px 9px; cursor: pointer; float: right; margin-bottom: 5px; }
+  .sample-btn:hover { color: #7ab8f5; border-color: #7ab8f5; }
+
+  .version-row { display: flex; align-items: center; gap: .75rem; margin-top: .6rem; }
+  .version-row label { font-size: 11px; color: #6a6a9a; }
+  select { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 5px; padding: 5px 9px; font-size: 12px; cursor: pointer; }
+  select:focus { outline: none; border-color: #3b6fea; }
+
+  .btn-generate { display: block; width: 100%; margin-top: .85rem; background: #16a34a; color: #fff; border: none; padding: 10px 0; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-generate:hover    { background: #15803d; }
+  .btn-generate:disabled { background: #22253a; color: #5a5a7a; cursor: not-allowed; }
+
+  /* AE OUTPUT */
+  .ae-output { background: #0a0c12; border: 1px solid #1a3a20; border-radius: 7px; padding: .85rem 1rem; font-family: 'Menlo','Consolas','Courier New',monospace; font-size: 12px; line-height: 1.7; color: #86efac; white-space: pre-wrap; word-break: break-all; min-height: 110px; }
+  .copy-bar { display: flex; justify-content: flex-end; margin-bottom: 5px; }
+  .copy-sm { font-size: 11px; color: #5a5a7a; background: none; border: 1px solid #22253a; border-radius: 4px; padding: 3px 9px; cursor: pointer; }
+  .copy-sm:hover { color: #fff; border-color: #4ade80; }
+  .ae-placeholder { color: #3e4460; font-style: italic; }
+
+  /* METADATA PILLS */
+  .meta-pills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .85rem; }
+  .meta-pill  { font-size: 11px; padding: 3px 9px; border-radius: 4px; font-family: monospace; }
+  .mp-id    { background: #0f1520; color: #7ab8f5; border: 1px solid #1e2a40; }
+  .mp-date  { background: #0f1520; color: #f59e0b; border: 1px solid #3a2a0a; }
+  .mp-amt   { background: #0f1520; color: #4ade80; border: 1px solid #1a3a20; }
+
+  /* SPINNER */
+  #spinner { display: none; max-width: 1100px; margin: 0 auto 1.25rem auto; text-align: center; padding: 1.5rem; color: #5a5a7a; font-size: 13px; }
+  .dot { animation: blink 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink {
+    0%   { opacity: 0; }
+    40%  { opacity: 1; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* WARNINGS / ERRORS */
+  .alert-box { max-width: 1100px; margin: 0 auto .75rem auto; border-radius: 8px; padding: .85rem 1rem; font-size: 13px; }
+  .alert-error   { background: #2a1518; border: 1px solid #5c2326; color: #f87171; }
+  .alert-warn    { background: #241a08; border: 1px solid #78450a; color: #f59e0b; }
+  .alert-break   { background: #2a1010; border: 1px solid #7f1d1d; color: #fca5a5; font-weight: 600; }
+  .alert-box ul  { margin: .4rem 0 0 0; padding-left: 1.25rem; }
+  .alert-box li  { margin-bottom: 3px; }
+
+  /* FIELD MAPPING TABLE */
+  .mapping-card { max-width: 1100px; margin: 0 auto 1.25rem auto; background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; }
+  .mapping-title { font-size: 12px; font-weight: 700; color: #a0a8c0; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 .85rem 0; }
+  .mapping-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mapping-table th { text-align: left; padding: 6px 10px; border-bottom: 1px solid #1e2130; color: #5a5a7a; font-weight: 600; font-size: 10px; text-transform: uppercase; }
+  .mapping-table td { padding: 6px 10px; border-bottom: 1px solid #1a1d2a; vertical-align: top; }
+  .tag-chip { display: inline-block; font-family: monospace; font-size: 11px; padding: 1px 6px; border-radius: 3px; margin-right: 3px; }
+  .tc-src { background: #1a2240; color: #7ab8f5; }
+  .tc-tgt { background: #0d2010; color: #4ade80; }
+  .tc-auto { background: #1a1230; color: #c084fc; }
+  .tc-calc { background: #241a08; color: #f59e0b; }
+  .val-src { color: #c8d8f0; font-family: monospace; font-size: 11px; }
+  .val-tgt { color: #86efac; font-family: monospace; font-size: 11px; }
+  .rule-text { color: #5a5a7a; font-size: 11px; }
+  .break-row td { background: #200d0d !important; }
+  .break-icon { color: #f87171; font-weight: 700; margin-right: 3px; }
+  .arrow-col { text-align: center; color: #3e4460; font-size: 14px; }
+
+  /* DECODE TABLES */
+  .decode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 1100px; margin: 0 auto 1.25rem auto; }
+  .decode-card { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; }
+  .decode-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 .75rem 0; padding-bottom: .5rem; border-bottom: 1px solid #22253a; }
+  .decode-card.exec-card .decode-title { color: #7ab8f5; }
+  .decode-card.ae-card   .decode-title { color: #4ade80; }
+  .decode-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .decode-table th { text-align: left; padding: 5px 8px; border-bottom: 1px solid #1e2130; color: #5a5a7a; font-size: 10px; text-transform: uppercase; }
+  .decode-table td { padding: 5px 8px; border-bottom: 1px solid #1a1d2a; vertical-align: top; }
+  .dt-tag { font-family: monospace; color: #7ab8f5; font-weight: 700; }
+  .dt-name { color: #a0a8c0; }
+  .dt-val  { font-family: monospace; color: #c8d8f0; }
+  .dt-mean { color: #4ade80; font-size: 10px; }
+  .dt-unknown { background: #1e1810 !important; }
+
+  footer { text-align: center; color: #2e3250; font-size: 11px; margin-top: 2.5rem; }
+
+  @media (max-width: 740px) {
+    .two-col, .decode-grid { grid-template-columns: 1fr; }
+    .flow-bar { gap: .4rem; }
+  }
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html">Trade Latency</a>
+  <a href="log-search.html">Log Search</a>
+  <a href="market-data.html">Market Data</a>
+  <a href="stp.html" class="active">STP Generator</a>
+
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">Trade Settlement STP Generator &mdash; 35=8 Execution Report (Fill) &rarr; 35=AE Trade Capture Report</p>
+
+<!-- STP FLOW DIAGRAM -->
+<div class="flow-bar">
+  <div class="flow-pill fp-exec">Execution Venue</div>
+  <div class="fp-arrow">→</div>
+  <div class="flow-pill fp-exec">35=8 &nbsp; 150=F &nbsp; 39=1/2</div>
+  <div class="fp-arrow">→</div>
+  <div class="flow-pill fp-stp">STP Event</div>
+  <div class="fp-arrow">→</div>
+  <div class="flow-pill fp-stp">35=AE Trade Capture Report</div>
+  <div class="fp-arrow">→</div>
+  <div class="flow-pill fp-clear">Clearing / Settlement</div>
+</div>
+
+<!-- TWO COLUMN INPUT / OUTPUT -->
+<div class="two-col">
+
+  <!-- LEFT: 35=8 INPUT -->
+  <div class="panel exec-panel">
+    <p class="panel-title">Input &mdash; 35=8 Execution Report (Fill)</p>
+    <button class="sample-btn" id="sampleBtn">Load sample</button>
+    <div style="clear:both"></div>
+    <textarea id="execInput" placeholder="Paste your pipe-delimited 35=8 fill message here&#10;Example: 8=FIX.4.2|35=8|49=BROKER|56=CLIENT|17=EXEC001|37=ORD001|11=CLORD001|150=F|39=2|55=AAPL|54=1|32=100|31=150.25|14=100|151=0|60=20240101-14:30:00.000|1=ACC123|15=USD|10=000|"></textarea>
+    <div class="version-row">
+      <label>FIX Version:</label>
+      <select id="fixVersion">
+        <option value="FIX.4.2" selected>FIX.4.2</option>
+        <option value="FIX.4.4">FIX.4.4</option>
+        <option value="FIX.5.0">FIX.5.0</option>
+      </select>
+    </div>
+    <button class="btn-generate" id="generateBtn">Generate 35=AE STP Message →</button>
+  </div>
+
+  <!-- RIGHT: 35=AE OUTPUT -->
+  <div class="panel ae-panel">
+    <p class="panel-title">Generated &mdash; 35=AE Trade Capture Report</p>
+    <div class="copy-bar">
+      <button class="copy-sm" id="copyAE">Copy message</button>
+    </div>
+    <div class="ae-output" id="aeOutput"><span class="ae-placeholder">Generated 35=AE message will appear here after you click Generate</span></div>
+    <div class="meta-pills" id="metaPills" style="display:none">
+      <span class="meta-pill mp-id" id="mpReportID"></span>
+      <span class="meta-pill mp-id" id="mpMatchID"></span>
+      <span class="meta-pill mp-date" id="mpSettlDate"></span>
+      <span class="meta-pill mp-amt"  id="mpGross"></span>
+    </div>
+  </div>
+
+</div>
+
+<div id="spinner">Generating 35=AE STP message<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+
+<div id="alertArea"></div>
+
+<!-- FIELD MAPPING TABLE -->
+<div class="mapping-card" id="mappingCard" style="display:none">
+  <div class="mapping-title">Field Derivation Map &mdash; how every 35=AE field was produced from the 35=8</div>
+  <div style="overflow-x:auto">
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Source (35=8)</th>
+          <th>Source Value</th>
+          <th style="text-align:center">→</th>
+          <th>Target (35=AE)</th>
+          <th>Target Value</th>
+          <th>Derivation Rule</th>
+        </tr>
+      </thead>
+      <tbody id="mappingBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DECODE TABLES -->
+<div class="decode-grid" id="decodeGrid" style="display:none">
+  <div class="decode-card exec-card">
+    <div class="decode-title">35=8 Execution Report &mdash; Decoded Tags</div>
+    <div style="overflow-x:auto">
+      <table class="decode-table">
+        <thead><tr><th>Tag</th><th>Field Name</th><th>Value</th><th>Definition</th></tr></thead>
+        <tbody id="execDecodeBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="decode-card ae-card">
+    <div class="decode-title">35=AE Trade Capture Report &mdash; Decoded Tags</div>
+    <div style="overflow-x:auto">
+      <table class="decode-table">
+        <thead><tr><th>Tag</th><th>Field Name</th><th>Value</th><th>Definition</th></tr></thead>
+        <tbody id="aeDecodeBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var API = '${api_endpoint}/stp-generate';
+var SAMPLE_MSG = '8=FIX.4.2|9=210|35=8|34=42|49=EXECBROKER|52=20240115-14:30:00.123|56=CLIENTFIRM|' +
+  '17=EXEC20240115001|20=0|37=ORD20240115001|11=CLORD001|150=F|39=2|' +
+  '55=AAPL|54=1|38=100|32=100|31=182.50|14=100|151=0|6=182.50|' +
+  '60=20240115-14:30:00.100|1=ACC789012|15=USD|58=Fill at market|10=000|';
+
+document.getElementById('sampleBtn').addEventListener('click', function () {
+  document.getElementById('execInput').value = SAMPLE_MSG;
+});
+
+document.getElementById('generateBtn').addEventListener('click', function () {
+  var msg     = document.getElementById('execInput').value.trim();
+  var version = document.getElementById('fixVersion').value;
+  if (!msg) { showAlert('error', 'Please paste a 35=8 fill message.'); return; }
+
+  clearResults();
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('generateBtn').disabled  = true;
+
+  fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, fix_version: version })
+  })
+  .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+  .then(function (res) {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('generateBtn').disabled  = false;
+    if (!res.ok) {
+      var d = res.data;
+      var html = '';
+      if (d.errors   && d.errors.length)   html += buildAlert('error',   'Validation Errors',        d.errors);
+      if (d.warnings && d.warnings.length) html += buildAlert('warn',    'Warnings',                 d.warnings);
+      document.getElementById('alertArea').innerHTML = html;
+      if (d.exec_tags) renderDecodeTable('execDecodeBody', d.exec_tags);
+      if (d.exec_tags) document.getElementById('decodeGrid').style.display = 'grid';
+      return;
+    }
+    renderAll(res.data);
+  })
+  .catch(function (err) {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('generateBtn').disabled  = false;
+    showAlert('error', 'Request failed: ' + err.message);
+  });
+});
+
+function renderAll(d) {
+  var html = '';
+  if (d.errors   && d.errors.length)   html += buildAlert('error', 'Validation Errors', d.errors);
+  if (d.break_risks > 0)               html += buildAlert('break', d.break_risks + ' Settlement Break Risk(s) Detected', d.warnings.filter(function(w){ return w.indexOf('BREAK') !== -1; }));
+  else if (d.warnings && d.warnings.length) html += buildAlert('warn', 'Warnings', d.warnings);
+  document.getElementById('alertArea').innerHTML = html;
+
+  // AE message
+  document.getElementById('aeOutput').textContent = d.ae_message || '';
+
+  // Meta pills
+  if (d.trade_report_id || d.settl_date || d.gross_trade_amt) {
+    document.getElementById('metaPills').style.display = 'flex';
+    if (d.trade_report_id) document.getElementById('mpReportID').textContent  = 'TradeReportID: ' + d.trade_report_id;
+    if (d.trd_match_id)    document.getElementById('mpMatchID').textContent   = 'TrdMatchID: '    + d.trd_match_id;
+    if (d.settl_date)      document.getElementById('mpSettlDate').textContent = 'SettlDate: '     + d.settl_date + ' (T+2)';
+    if (d.gross_trade_amt) document.getElementById('mpGross').textContent     = 'GrossAmt: $'     + Number(d.gross_trade_amt).toLocaleString('en-US', {minimumFractionDigits:2});
+  }
+
+  // Field mapping
+  if (d.field_mapping && d.field_mapping.length) {
+    var mb = document.getElementById('mappingBody');
+    mb.innerHTML = '';
+    d.field_mapping.forEach(function (m) {
+      var isAuto = m.src_tag === '—' || m.src_tag.indexOf('×') !== -1 || m.src_tag.indexOf('+') !== -1;
+      var isCalc = m.src_tag.indexOf('×') !== -1;
+      var srcClass = isCalc ? 'tc-calc' : (isAuto ? 'tc-auto' : 'tc-src');
+      var row = document.createElement('tr');
+      if (m.break_risk) row.className = 'break-row';
+      row.innerHTML =
+        '<td><span class="tag-chip ' + srcClass + '">' + esc(m.src_tag) + '</span><span style="color:#8888a0;font-size:11px">' + esc(m.src_label) + '</span></td>' +
+        '<td class="val-src">' + (m.break_risk ? '<span class="break-icon">⚠</span>' : '') + esc(m.src_value || (isAuto ? 'auto' : '—')) + '</td>' +
+        '<td class="arrow-col">→</td>' +
+        '<td><span class="tag-chip tc-tgt">' + esc(m.tgt_tag) + '</span><span style="color:#8888a0;font-size:11px">' + esc(m.tgt_label) + '</span></td>' +
+        '<td class="val-tgt">' + esc(m.tgt_value || '—') + '</td>' +
+        '<td class="rule-text">' + esc(m.rule) + '</td>';
+      mb.appendChild(row);
+    });
+    document.getElementById('mappingCard').style.display = 'block';
+  }
+
+  // Decode tables
+  if (d.exec_tags) renderDecodeTable('execDecodeBody', d.exec_tags);
+  if (d.ae_tags)   renderDecodeTable('aeDecodeBody',   d.ae_tags);
+  document.getElementById('decodeGrid').style.display = 'grid';
+}
+
+function renderDecodeTable(bodyId, tags) {
+  var tbody = document.getElementById(bodyId);
+  tbody.innerHTML = '';
+  tags.forEach(function (t) {
+    var tr = document.createElement('tr');
+    if (!t.known) tr.className = 'dt-unknown';
+    tr.innerHTML =
+      '<td class="dt-tag">' + esc(t.tag)  + '</td>' +
+      '<td class="dt-name">' + esc(t.name) + '</td>' +
+      '<td class="dt-val">'  + esc(t.value) + '</td>' +
+      '<td class="dt-mean">' + esc(t.value_meaning || '') + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function buildAlert(type, title, items) {
+  var cls = { error: 'alert-error', warn: 'alert-warn', break: 'alert-break' }[type] || 'alert-warn';
+  var li  = (items || []).map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('');
+  return '<div class="alert-box ' + cls + '"><strong>' + esc(title) + '</strong>' + (li ? '<ul>' + li + '</ul>' : '') + '</div>';
+}
+
+function showAlert(type, msg) {
+  document.getElementById('alertArea').innerHTML = buildAlert(type, msg, []);
+}
+
+function clearResults() {
+  document.getElementById('alertArea').innerHTML          = '';
+  document.getElementById('aeOutput').innerHTML          = '<span class="ae-placeholder">Generating...</span>';
+  document.getElementById('metaPills').style.display      = 'none';
+  document.getElementById('mappingCard').style.display    = 'none';
+  document.getElementById('decodeGrid').style.display     = 'none';
+  document.getElementById('execDecodeBody').innerHTML    = '';
+  document.getElementById('aeDecodeBody').innerHTML      = '';
+  document.getElementById('mappingBody').innerHTML       = '';
+}
+
+document.getElementById('copyAE').addEventListener('click', function () {
+  var txt = document.getElementById('aeOutput').textContent;
+  if (!txt || txt.indexOf('Generated') !== -1) return;
+  navigator.clipboard.writeText(txt).then(function () {
+    var b = document.getElementById('copyAE');
+    b.textContent = 'Copied!';
+    setTimeout(function () { b.textContent = 'Copy message'; }, 1800);
+  });
+});
+
+function esc(s) {
+  if (typeof s !== 'string') return s || '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>

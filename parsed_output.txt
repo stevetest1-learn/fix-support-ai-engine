@@ -1,0 +1,891 @@
+FIX Protocol Parser - Repository Edition - Output
+Repository : /Users/steve/fix-parser-web/repository
+Input File : fix_messages.txt
+Generated  : 2026-06-29 07:01:42
+======================================================================
+
+
+======================================================================
+  MESSAGE #1
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD003|55=EUR/USD|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : FX / Currency  (EUR/USD)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD003
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = EUR/USD
+                                       (Ticker symbol)
+                                       -> FX Currency Pair (EUR/USD)
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #2
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD004|55=037833AA2|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Unclassified / Other  (037833AA2)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD004
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = 037833AA2
+                                       (Ticker symbol)
+                                       -> Symbol format not recognized as equity ticker or FX pair
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #3
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD006|55=NOK|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (NOK)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD006
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = NOK
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #4
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD033|55=A|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (A)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD033
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = A
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #5
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD044|55=BC|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (BC)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD044
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = BC
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #6
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD045|55=UNTL|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (UNTL)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD045
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = UNTL
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #7
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD033|55=PAGE|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (PAGE)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD033
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = PAGE
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #8
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD222|55=INTC|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (INTC)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD222
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = INTC
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #9
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD555|55=AMZN|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (AMZN)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD555
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = AMZN
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #10
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD666|55=GOOGL|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (GOOGL)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD666
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = GOOGL
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #11
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD888|55=PUTS|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (PUTS)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD888
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = PUTS
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #12
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD999|55=KO|54=1|38=100|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (KO)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD999
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = KO
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 100
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #13
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD879|55=INTC|54=1|38=1000000|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (INTC)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD879
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = INTC
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 1000000
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #14
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD456|55=INTC|54=1|38=1000000|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (INTC)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD456
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = INTC
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 1000000
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  MESSAGE #15
+======================================================================
+  RAW          : 8=FIX.4.2|9=65|35=D|49=CLIENT1|56=BROKER|11=ORD765|55=INTC|54=1|38=40000|40=2|44=150.00|60=20240101-09:30:00|10=123|
+  FIX Version  : FIX.4.2
+  Asset Class  : Equities (Stock Symbol)  (INTC)
+  Validation   : FAILED (3 issue(s))
+----------------------------------------------------------------------
+  VALIDATION ERRORS / NOTES:
+    - Missing required header tag 34 (MsgSeqNum)
+    - Missing required header tag 52 (SendingTime)
+    - Tag 21 (HandlInst) is required for MsgType=D (Order - Single) but is missing
+----------------------------------------------------------------------
+  Tag    8 | BeginString               = FIX.4.2
+                                       (Identifies beginning of new message and protocol version.  ALWAYS FIRST FIELD IN MESSAGE. ...)
+  Tag    9 | BodyLength                = 65
+                                       (Message length, in bytes, forward to the CheckSum field.  ALWAYS SECOND FIELD IN MESSAGE. ...)
+  Tag   35 | MsgType                   = D
+                                       -> Order  Single
+                                       (Defines message type.    ALWAYS THIRD FIELD IN MESSAGE. (Always unencrypted)
+Note: A "U" a...)
+  Tag   49 | SenderCompID              = CLIENT1
+                                       (Assigned value used to identify firm sending message.)
+  Tag   56 | TargetCompID              = BROKER
+                                       (Assigned value used to identify receiving firm.)
+  Tag   11 | ClOrdID                   = ORD765
+                                       (Unique identifier for Order as assigned by institution (identified by SenderCompID or OnBe...)
+  Tag   55 | Symbol                    = INTC
+                                       (Ticker symbol)
+                                       -> Stock Ticker / Equity Symbol
+  Tag   54 | Side                      = 1
+                                       -> Buy
+                                       (Side of order
+Valid values:
+1	=	Buy
+2	=	Sell
+3	=	Buy minus
+4	=	Sell plus
+5	=	Sell short
+6	...)
+  Tag   38 | OrderQty                  = 40000
+                                       (Number of shares ordered.  This represents the number of shares for equities or based on n...)
+  Tag   40 | OrdType                   = 2
+                                       -> Limit
+                                       (Order type.
+Valid values:  
+1 = Market
+2 = Limit
+3 = Stop
+4 = Stop limit
+5 = Market on clo...)
+  Tag   44 | Price                     = 150.00
+                                       (Price per share)
+  Tag   60 | TransactTime              = 20240101-09:30:00
+                                       (Time of execution/order creation (expressed in UTC (Universal Time Coordinated, also known...)
+  Tag   10 | CheckSum                  = 123
+                                       (Three byte, simple checksum  (see Appendix B: CheckSum Calculation for description).  ALWA...)
+
+======================================================================
+  SUMMARY
+======================================================================
+  Total messages parsed   : 15
+  Lines skipped           : 0
+  Messages with errors    : 15 of 15
+  FIX version breakdown   :
+      FIX.4.2              : 15
+  Asset class breakdown   :
+      Equities (Stock Symbol)             : 13
+      FX / Currency                       : 1
+      Unclassified / Other                : 1
+  Completed                : 2026-06-29 07:01:42
+======================================================================

@@ -1,0 +1,35 @@
+# Terraform state and plugins — never commit these
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+*.tfvars
+
+# Terraform build artifacts (generated zips)
+terraform/build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# AWS credentials — never commit
+.aws/
+credentials
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
