@@ -36,6 +36,7 @@ SUPPORTED_PRODUCTS = {
     'UNI-USD':  {'name': 'Uniswap',       'base': 'UNI',  'icon': '🦄'},
     'ATOM-USD': {'name': 'Cosmos',        'base': 'ATOM', 'icon': '⚛'},
     'NEAR-USD': {'name': 'NEAR Protocol', 'base': 'NEAR', 'icon': '◈'},
+    'SUI-USD':  {'name': 'Sui',           'base': 'SUI',  'icon': '💧'},
 }
 
 COINBASE_API = 'https://api.exchange.coinbase.com'
