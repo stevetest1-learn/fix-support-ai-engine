@@ -42,7 +42,7 @@ All infrastructure is defined as Terraform IaC — fully reproducible from scrat
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/823stevehatfield/fix-support-ai-engine.git
+git clone https://github.com/stevetest1-learn/fix-support-ai-engine.git
 cd fix-support-ai-engine
 ```
 
