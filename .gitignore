@@ -1,8 +1,10 @@
 # Terraform state and plugins — never commit these
 .terraform/
-.terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+crash.log
 terraform.tfvars
 *.tfvars
 
