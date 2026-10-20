@@ -288,7 +288,7 @@ body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
     <label>Username (Trading)</label>
     <input type="text" id="ord-user" placeholder="e.g. tradeuser01">
     <label>Password (Trading)</label>
-    <input type="password" id="ord-pass" placeholder="e.g. ••••••••">
+    <input type="text" id="ord-pass" placeholder="e.g. ••••••••">
     <label>Account (Tag 1)</label>
     <input type="text" id="ord-account" placeholder="e.g. ACC123456">
 
@@ -400,7 +400,7 @@ document.getElementById("generateBtn").addEventListener("click", function () {
     "  SenderCompID      : " + (ordSender || "(not provided)") + "\n" +
     "  TargetCompID      : " + (ordTarget || "(not provided)") + "\n" +
     "  Username          : " + (ordUser   || "(not provided)") + "\n" +
-    "  Password          : " + (ordPass   ? maskPass(ordPass) : "(not provided)") + "\n" +
+    "  Password          : " + (ordPass   ? ordPass : "(not provided)") + "\n" +
     "  Account (Tag 1)   : " + (ordAcct   || "(not provided)") + "\n\n" +
 
     "==========================================================\n" +
