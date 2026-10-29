@@ -238,6 +238,7 @@ body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
   <a href="log-search.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Log Search</a>
   <a href="market-data.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Market Data</a>
   <a href="stp.html"    style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">STP Generator</a>
+  <a href="portfolio.html" style="font-size:12px;color:#6a6a9a;text-decoration:none;border:1px solid #2a2d3a;border-radius:6px;padding:5px 12px">Portfolio Analyser</a>
 </nav>
 <button class="nav-btn donate-btn"
         onclick="document.getElementById('donateModal').classList.add('open')">
@@ -487,7 +488,7 @@ document.addEventListener('keydown', function (e) {
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('featuresModal').classList.remove('open')">&times;</button>
     <div class="modal-title">FIX Support AI Engine</div>
-    <div class="modal-sub">Seven production-grade FIX tools — free, no login required · Built by Steve Hatfield</div>
+    <div class="modal-sub">Eight production-grade FIX tools — free, no login required · Built by Steve Hatfield</div>
     <div class="tools-grid">
       <a class="tool-card" href="index.html">
         <div class="tool-icon">🔍</div>
@@ -529,6 +530,12 @@ document.addEventListener('keydown', function (e) {
         <div class="tool-icon">🔄</div>
         <div class="tool-name">STP Generator</div>
         <div class="tool-desc">Paste a 35=8 fill (150=F, 39=1/2) and instantly generate the complete 35=AE Trade Capture Report for clearing. Full field derivation map. Settlement break risk flagging. BodyLength and CheckSum calculated.</div>
+        <span class="tool-link">Open tool →</span>
+      </a>
+      <a class="tool-card" href="portfolio.html">
+        <div class="tool-icon">💼</div>
+        <div class="tool-name">Portfolio Analyser</div>
+        <div class="tool-desc">Upload a holdings CSV or a FIX log of 35=8 fills. Every position is converted to one base currency with live or manual FX rates and rolled up by account, symbol, asset class and currency. Concentration, loss and data-quality alerts.</div>
         <span class="tool-link">Open tool →</span>
       </a>
     </div>

@@ -569,3 +569,58 @@ resource "aws_s3_object" "stp_html" {
     api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
   }))
 }
+# ═══════════════════════════════════════════════════════════════════════════
+# Portfolio Analyser — APPEND this block to the bottom of terraform/main.tf
+# ═══════════════════════════════════════════════════════════════════════════
+
+data "archive_file" "portfolio_lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/../lambda_portfolio/lambda_portfolio.py"
+  output_path = "${path.module}/build/portfolio_lambda.zip"
+}
+
+resource "aws_lambda_function" "portfolio" {
+  function_name    = "${var.project_name}-portfolio-${random_id.suffix.hex}"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "lambda_portfolio.lambda_handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.portfolio_lambda_zip.output_path
+  source_code_hash = data.archive_file.portfolio_lambda_zip.output_base64sha256
+  timeout          = 30
+  memory_size      = 512
+  # No layers needed — pure Python stdlib
+}
+
+resource "aws_apigatewayv2_integration" "portfolio_integration" {
+  api_id                 = aws_apigatewayv2_api.http_api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.portfolio.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "portfolio_route" {
+  api_id    = aws_apigatewayv2_api.http_api.id
+  route_key = "POST /portfolio"
+  target    = "integrations/${aws_apigatewayv2_integration.portfolio_integration.id}"
+}
+
+resource "aws_lambda_permission" "apigw_invoke_portfolio" {
+  statement_id  = "AllowAPIGatewayInvokePortfolio"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.portfolio.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
+}
+
+# ── Frontend page ─────────────────────────────────────────────────────────────
+resource "aws_s3_object" "portfolio_html" {
+  bucket = aws_s3_bucket.frontend.id
+  key    = "portfolio.html"
+  content = templatefile("${path.module}/../frontend/portfolio.html", {
+    api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
+  })
+  content_type = "text/html"
+  etag = md5(templatefile("${path.module}/../frontend/portfolio.html", {
+    api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
+  }))
+}

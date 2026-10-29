@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Analyser — FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0a0c12; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  nav { max-width: 1100px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; transition: all .15s; }
+  nav a:hover  { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 3px 0; }
+  p.site-sub    { text-align: center; color: #5a5a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  .card { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; max-width: 1100px; margin: 0 auto 1.25rem auto; }
+  .card-title { font-size: 12px; font-weight: 700; color: #7a82a8; text-transform: uppercase; letter-spacing: .9px; margin: 0 0 1rem 0; padding-bottom: .6rem; border-bottom: 1px solid #22253a; display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
+
+  .upload-area { border: 2px dashed #22253a; border-radius: 8px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: border-color .2s; margin-bottom: .75rem; }
+  .upload-area:hover, .upload-area.drag-over { border-color: #3b6fea; background: #13182a; }
+  .upload-area p { margin: 0; font-size: 13px; color: #5a5a7a; }
+  .upload-area .fname { color: #a0b8e8; font-family: monospace; font-size: 12px; margin-top: 5px; }
+  .upload-area .hint { font-size: 11px; color: #3e4460; margin-top: 6px; font-family: monospace; }
+  #fileInput { display: none; }
+
+  .options-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; }
+  .toggle-group { display: flex; align-items: center; gap: 8px; }
+  .toggle-group label { font-size: 12px; color: #8888a0; cursor: pointer; }
+  input[type=checkbox] { accent-color: #3b6fea; width: 14px; height: 14px; cursor: pointer; }
+  select, input[type=number] { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 6px; padding: 6px 10px; font-size: 12px; }
+  select:focus, input:focus { outline: none; border-color: #3b6fea; }
+  .spacer { flex: 1; }
+
+  .btn { background: #3b6fea; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .btn:hover    { background: #2f5bd0; }
+  .btn:disabled { background: #22253a; color: #5a5a7a; cursor: not-allowed; }
+  .btn-ghost { font-size: 11px; color: #8888a0; background: none; border: 1px solid #22253a; border-radius: 5px; padding: 4px 10px; cursor: pointer; text-transform: none; letter-spacing: 0; font-weight: 600; }
+  .btn-ghost:hover { color: #fff; border-color: #3b6fea; }
+
+  #spinner { display: none; text-align: center; padding: 2rem; color: #5a5a7a; font-size: 13px; }
+  .dot { animation: blink 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0% { opacity: 0; } 40% { opacity: 1; } 80% { opacity: 0; } 100% { opacity: 0; } }
+
+  #results { display: none; }
+
+  /* KPI tiles */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .75rem; }
+  .kpi { background: #0d1018; border: 1px solid #1c1f30; border-radius: 8px; padding: .8rem .9rem; }
+  .kpi-label { font-size: 10px; color: #5a5a7a; text-transform: uppercase; letter-spacing: .6px; font-weight: 700; }
+  .kpi-value { font-size: 19px; font-weight: 700; color: #fff; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi-sub   { font-size: 11px; color: #5a5a7a; margin-top: 2px; }
+  .pos { color: #4ade80 !important; }
+  .neg { color: #f87171 !important; }
+  .meta-line { font-size: 12px; color: #5a5a7a; margin-top: .9rem; }
+  .meta-line strong { color: #a0b8e8; font-weight: 600; }
+
+  /* FX table */
+  .fx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .6rem; }
+  .fx-cell { display: flex; align-items: center; gap: 8px; background: #0d1018; border: 1px solid #1c1f30; border-radius: 6px; padding: .5rem .7rem; }
+  .fx-cell.missing { border-color: #78450a; background: #2a2010; }
+  .fx-ccy { font-family: monospace; font-weight: 700; color: #a0b8e8; width: 34px; }
+  .fx-cell input { width: 100px; font-family: monospace; }
+  .src { font-size: 9px; text-transform: uppercase; letter-spacing: .5px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+  .src-live    { background: #14253a; color: #3b6fea; }
+  .src-manual  { background: #1a2510; color: #84cc16; }
+  .src-base    { background: #1a1a2e; color: #8888a0; }
+  .src-missing { background: #3a2510; color: #f59e0b; }
+  .fx-note { font-size: 11px; color: #5a5a7a; margin: .75rem 0 0 0; }
+
+  /* Alerts */
+  .alert { display: flex; gap: .6rem; align-items: baseline; padding: .45rem .2rem; border-bottom: 1px solid #1a1d2a; font-size: 12.5px; flex-wrap: wrap; }
+  .alert:last-child { border-bottom: none; }
+  .sev { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; min-width: 44px; text-align: center; }
+  .sev-RISK { background: #3a1518; color: #f87171; border: 1px solid #5c2326; }
+  .sev-DATA { background: #2a2010; color: #f59e0b; border: 1px solid #78450a; }
+  .sev-INFO { background: #14253a; color: #7ab8f5; border: 1px solid #1e3a5a; }
+  .alert .who { font-family: monospace; color: #a0b8e8; white-space: nowrap; }
+  .alert .what { color: #c8c8d8; }
+
+  /* Tabs + tables */
+  .tabs { display: flex; gap: .4rem; flex-wrap: wrap; }
+  .tab { font-size: 11px; color: #8888a0; background: none; border: 1px solid #22253a; border-radius: 5px; padding: 4px 11px; cursor: pointer; font-weight: 600; text-transform: none; letter-spacing: 0; }
+  .tab.active { color: #3b6fea; border-color: #3b6fea; background: #13182a; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-size: 10px; color: #5a5a7a; text-transform: uppercase; letter-spacing: .5px; padding: 7px 10px; border-bottom: 1px solid #22253a; cursor: pointer; user-select: none; white-space: nowrap; background: #10121a; }
+  th:hover { color: #a0b8e8; }
+  th.num, td.num { text-align: right; }
+  td { padding: 7px 10px; border-bottom: 1px solid #1a1d2a; color: #d0d0dc; white-space: nowrap; }
+  td.key { font-family: monospace; color: #a0b8e8; }
+  tr:hover td { background: #161928; }
+  tfoot td { font-weight: 700; color: #fff; border-top: 1px solid #2a2d3a; border-bottom: none; }
+  .bar { display: inline-block; height: 6px; background: #3b6fea; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+
+  .error-box { max-width: 1100px; margin: 0 auto 1.25rem auto; background: #2a1518; border: 1px solid #5c2326; border-radius: 8px; padding: 1rem 1.25rem; color: #f87171; font-size: 13px; }
+  footer { text-align: center; color: #2e3250; font-size: 11px; margin-top: 2.5rem; }
+
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+body.light-mode {
+  background: #f0f2f8;
+  color: #1a1d2e;
+}
+body.light-mode .panel,
+body.light-mode .card { background: #ffffff; border-color: #d0d5e8; }
+body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+body.light-mode nav a:hover  { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+body.light-mode .panel-title { color: #4a4a7a; border-color: #dde2f0; }
+body.light-mode label,
+body.light-mode .field-label { color: #5a5a9a; }
+body.light-mode input[type=text],
+body.light-mode input[type=password],
+body.light-mode textarea,
+body.light-mode select {
+  background: #f8f9fc;
+  color: #1a1d2e;
+  border-color: #d0d5e8;
+}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus { border-color: #3b6fea; }
+body.light-mode .summary      { background: #f0f2f8; border-color: #d0d5e8; }
+body.light-mode .summary p    { color: #2a2d4a; }
+body.light-mode table th      { color: #8888aa; background: #f8f9fc; }
+body.light-mode table td      { border-color: #e8eaf4; color: #2a2d4a; }
+body.light-mode .site-sub     { color: #7a7aaa; }
+body.light-mode p.sub         { color: #7a7aaa; }
+body.light-mode footer        { color: #9a9ab8; }
+body.light-mode .section-label { background: #e8eef8; color: #3b6fea; }
+body.light-mode .session-block {
+  background: #f8f9fc;
+  color: #2a3a6a;
+  border-color: #d0d5e8;
+}
+body.light-mode .error-text   { color: #dc2626; }
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #2a2d3a;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #6a6a9a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+body.light-mode .theme-toggle {
+  border-color: #d0d5e8;
+  color: #5a5a9a;
+  background: #fff;
+}
+body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+
+body.light-mode .kpi, body.light-mode .fx-cell { background: #f8f9fc; border-color: #d0d5e8; }
+body.light-mode .kpi-value { color: #1a1d2e; }
+body.light-mode .fx-cell.missing { background: #fff7e6; border-color: #f5c56b; }
+body.light-mode th { background: #f8f9fc; }
+body.light-mode td { color: #2a2d4a; border-color: #e8eaf4; }
+body.light-mode td.key, body.light-mode .alert .who, body.light-mode .fx-ccy { color: #3b6fea; }
+body.light-mode tr:hover td { background: #f0f3fb; }
+body.light-mode tfoot td { color: #1a1d2e; border-color: #d0d5e8; }
+body.light-mode .alert { border-color: #e8eaf4; }
+body.light-mode .alert .what { color: #2a2d4a; }
+body.light-mode .tab.active { background: #e8eef8; }
+body.light-mode input[type=number] { background: #f8f9fc; color: #1a1d2e; border-color: #d0d5e8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html">Trade Latency</a>
+  <a href="log-search.html">Log Search</a>
+  <a href="market-data.html">Market Data</a>
+  <a href="stp.html">STP Generator</a>
+  <a href="portfolio.html" class="active">Portfolio Analyser</a>
+
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">Portfolio Analyser &mdash; upload holdings or FIX fills and roll every account, symbol and currency up into one base currency</p>
+
+<!-- UPLOAD CARD -->
+<div class="card">
+  <p class="card-title">Upload Holdings or FIX Fills</p>
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept=".csv,.txt,.tsv,.log,.fix">
+    <p>Drag &amp; drop a holdings CSV or a FIX log of 35=8 fills, or click to browse</p>
+    <p id="fileName" class="fname"></p>
+    <p class="hint">CSV columns: account, symbol, asset_class, currency, quantity, avg_cost, market_price</p>
+  </div>
+  <div class="options-row">
+    <div class="toggle-group">
+      <label for="baseCcy">Base currency:</label>
+      <select id="baseCcy">
+        <option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option>
+        <option>CHF</option><option>CAD</option><option>AUD</option><option>HKD</option><option>SGD</option>
+      </select>
+    </div>
+    <div class="toggle-group">
+      <input type="checkbox" id="liveRates" checked>
+      <label for="liveRates">Fetch live FX rates</label>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="runBtn" disabled>Analyse Portfolio</button>
+  </div>
+</div>
+
+<div id="spinner">Analysing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+<div id="errorArea"></div>
+
+<div id="results">
+  <!-- SUMMARY -->
+  <div class="card">
+    <p class="card-title"><span id="summaryTitle">Firm Summary</span></p>
+    <div class="kpis" id="kpis"></div>
+    <div class="meta-line" id="metaLine"></div>
+  </div>
+
+  <!-- FX RATES -->
+  <div class="card">
+    <p class="card-title">
+      <span id="fxTitle">FX Rates</span>
+      <button class="btn-ghost" id="recalcBtn">Recalculate with these rates</button>
+    </p>
+    <div class="fx-grid" id="fxGrid"></div>
+    <p class="fx-note">Each rate is units of base currency per 1 unit of the listed currency. Edit any rate, or fill in missing ones, then recalculate. Edited rates override live rates.</p>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="card">
+    <p class="card-title"><span id="alertsTitle">Support Alerts</span>
+      <select id="sevFilter"><option value="">All</option><option>RISK</option><option>DATA</option><option>INFO</option></select>
+    </p>
+    <div id="alertsList"></div>
+  </div>
+
+  <!-- ROLL-UPS -->
+  <div class="card">
+    <p class="card-title">
+      <span class="tabs" id="tabs">
+        <button class="tab active" data-view="accounts">By Account</button>
+        <button class="tab" data-view="symbols">By Symbol</button>
+        <button class="tab" data-view="asset_class">By Asset Class</button>
+        <button class="tab" data-view="currency">By Currency</button>
+        <button class="tab" data-view="positions">All Positions</button>
+      </span>
+      <button class="btn-ghost" id="csvBtn">Download CSV</button>
+    </p>
+    <div class="table-wrap" id="tableWrap"></div>
+  </div>
+</div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var API = '${api_endpoint}/portfolio';
+var selectedFile = null, fileB64 = null, lastData = null;
+var currentView = 'accounts', sortKey = null, sortDir = -1;
+
+// ── File selection ─────────────────────────────────────────────────────────
+var uploadArea = document.getElementById('uploadArea');
+var fileInput  = document.getElementById('fileInput');
+uploadArea.addEventListener('click', function () { fileInput.click(); });
+uploadArea.addEventListener('dragover',  function (e) { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', function ()  { uploadArea.classList.remove('drag-over'); });
+uploadArea.addEventListener('drop', function (e) {
+  e.preventDefault(); uploadArea.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', function () { if (fileInput.files.length) setFile(fileInput.files[0]); });
+
+function setFile(f) {
+  if (f.size > 5 * 1024 * 1024) { showError('File exceeds 5 MB. Please upload a smaller file.'); return; }
+  selectedFile = f; fileB64 = null;
+  document.getElementById('fileName').textContent = f.name + '  (' + (f.size / 1024).toFixed(1) + ' KB)';
+  document.getElementById('runBtn').disabled = false;
+}
+
+function readFile(cb) {
+  if (fileB64) { cb(fileB64); return; }
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var bytes = new Uint8Array(e.target.result), bin = '';
+    for (var i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+    fileB64 = btoa(bin); cb(fileB64);
+  };
+  reader.readAsArrayBuffer(selectedFile);
+}
+
+document.getElementById('runBtn').addEventListener('click', function () { run({}); });
+document.getElementById('recalcBtn').addEventListener('click', function () {
+  var rates = {};
+  document.querySelectorAll('#fxGrid input').forEach(function (inp) {
+    var v = parseFloat(inp.value);
+    if (v > 0 && (inp.dataset.edited === '1' || inp.dataset.source === 'manual' || inp.dataset.source === 'missing')) rates[inp.dataset.ccy] = v;
+  });
+  run(rates);
+});
+document.getElementById('baseCcy').addEventListener('change', function () { if (lastData) run({}); });
+
+function run(manualRates) {
+  if (!selectedFile) return;
+  document.getElementById('errorArea').innerHTML = '';
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('runBtn').disabled = true;
+  readFile(function (b64) {
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: b64,
+        base_currency: document.getElementById('baseCcy').value,
+        live_rates: document.getElementById('liveRates').checked,
+        fx_rates: manualRates
+      })
+    })
+    .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+    .then(function (r) {
+      done();
+      if (!r.ok) { showError(r.data.error || 'Analysis failed.'); return; }
+      lastData = r.data; render(r.data);
+    })
+    .catch(function (err) { done(); showError('Request failed: ' + err.message); });
+  });
+}
+function done() {
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('runBtn').disabled = false;
+}
+
+// ── Formatting ─────────────────────────────────────────────────────────────
+function money(v, dp) {
+  if (v === null || v === undefined) return '—';
+  dp = dp === undefined ? 0 : dp;
+  return Number(v).toLocaleString(undefined, { minimumFractionDigits: dp, maximumFractionDigits: dp });
+}
+function signed(v) { return (v > 0 ? '+' : '') + money(v); }
+function pct(v) { return (v === null || v === undefined) ? '—' : (v > 0 ? '+' : '') + Number(v).toFixed(2) + '%'; }
+function cls(v) { return v > 0 ? 'pos' : (v < 0 ? 'neg' : ''); }
+function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function render(d) {
+  document.getElementById('results').style.display = 'block';
+  var s = d.summary, b = s.base_currency;
+
+  document.getElementById('summaryTitle').textContent = 'Firm Summary (' + b + ')';
+  var tiles = [
+    ['Net Market Value', money(s.market_value), s.positions + ' positions', ''],
+    ['Gross Exposure', money(s.gross_exposure), 'Long ' + money(s.long) + ' / Short ' + money(s.short), ''],
+    ['Unrealised P&amp;L', signed(s.unrealised_pnl),
+       s.cost_basis ? pct(s.unrealised_pnl / Math.abs(s.cost_basis) * 100) + ' on cost' : '', cls(s.unrealised_pnl)],
+    ['Accounts', s.accounts, s.symbols + ' symbols', ''],
+    ['Alerts', s.alerts.RISK + s.alerts.DATA + s.alerts.INFO, s.alerts.RISK + ' risk · ' + s.alerts.DATA + ' data · ' + s.alerts.INFO + ' info', s.alerts.RISK ? 'neg' : '']
+  ];
+  document.getElementById('kpis').innerHTML = tiles.map(function (t) {
+    return '<div class="kpi"><div class="kpi-label">' + t[0] + '</div><div class="kpi-value ' + t[3] + '">' + t[1] + '</div><div class="kpi-sub">' + t[2] + '</div></div>';
+  }).join('');
+
+  var meta = 'Source: <strong>' + esc(d.source.format) + '</strong>' +
+    (d.source.fills_processed !== undefined ? ' &middot; ' + d.source.fills_processed + ' fills processed' : '') +
+    ' &middot; all totals in <strong>' + b + '</strong>';
+  if (s.unconverted_positions) meta += ' &middot; <span class="neg">' + s.unconverted_positions + ' position(s) excluded — missing FX rate</span>';
+  document.getElementById('metaLine').innerHTML = meta;
+
+  // FX grid
+  document.getElementById('fxTitle').textContent = 'FX Rates → ' + b;
+  var cells = d.fx.rates.map(function (r) { return { ccy: r.currency, rate: r.rate_to_base, src: r.source }; })
+    .concat(d.fx.missing.map(function (c) { return { ccy: c, rate: '', src: 'missing' }; }));
+  document.getElementById('fxGrid').innerHTML = cells.map(function (c) {
+    return '<div class="fx-cell' + (c.src === 'missing' ? ' missing' : '') + '">' +
+      '<span class="fx-ccy">' + esc(c.ccy) + '</span>' +
+      '<input type="number" step="any" min="0" value="' + esc(c.rate) + '" data-ccy="' + esc(c.ccy) + '" data-source="' + c.src + '"' +
+      (c.src === 'base' ? ' disabled' : '') + (c.src === 'missing' ? ' placeholder="enter rate"' : '') + '>' +
+      '<span class="src src-' + c.src + '">' + c.src + '</span></div>';
+  }).join('');
+  document.querySelectorAll('#fxGrid input').forEach(function (inp) {
+    inp.addEventListener('input', function () { inp.dataset.edited = '1'; });
+  });
+
+  renderAlerts();
+  renderTable();
+}
+
+function renderAlerts() {
+  var d = lastData, f = document.getElementById('sevFilter').value;
+  var list = d.alerts.filter(function (a) { return !f || a.severity === f; });
+  document.getElementById('alertsTitle').textContent = 'Support Alerts (' + d.alerts.length + ')';
+  document.getElementById('alertsList').innerHTML = list.length ? list.map(function (a) {
+    var who = [a.account, a.symbol].filter(Boolean).join(' · ') + (a.line ? ' (line ' + a.line + ')' : '');
+    return '<div class="alert"><span class="sev sev-' + a.severity + '">' + a.severity + '</span>' +
+      '<span class="who">' + esc(who) + '</span><span class="what">' + esc(a.issue) + '</span></div>';
+  }).join('') : '<div style="color:#5a5a7a;font-size:13px">No alerts.</div>';
+}
+document.getElementById('sevFilter').addEventListener('change', renderAlerts);
+
+// ── Roll-up tables ─────────────────────────────────────────────────────────
+function columns(view, b) {
+  var rollup = [
+    ['market_value', 'MV (' + b + ')', 'money'], ['gross_exposure', 'Gross (' + b + ')', 'money'],
+    ['cost_basis', 'Cost (' + b + ')', 'money'], ['unrealised_pnl', 'P&L (' + b + ')', 'pnl'],
+    ['pnl_pct', 'P&L %', 'pct'], ['positions', 'Positions', 'int']
+  ];
+  if (view === 'accounts') return [['account', 'Account', 'key']].concat(rollup,
+      [['share_of_firm_pct', 'Share of Firm', 'share'], ['top_holding', 'Top Holding', 'text'], ['top_weight_pct', 'Top Wt %', 'num2'], ['currencies', 'Currencies', 'list']]);
+  if (view === 'symbols') return [['symbol', 'Symbol', 'key'], ['asset_class', 'Asset Class', 'text'], ['currency', 'Ccy', 'text'],
+      ['quantity', 'Total Qty', 'qty']].concat(rollup, [['accounts', 'Accounts', 'int']]);
+  if (view === 'asset_class') return [['asset_class', 'Asset Class', 'key']].concat(rollup);
+  if (view === 'currency') return [['currency', 'Currency', 'key'], ['market_value_local', 'MV (local)', 'money']].concat(rollup);
+  return [['account', 'Account', 'key'], ['symbol', 'Symbol', 'key'], ['asset_class', 'Asset Class', 'text'], ['currency', 'Ccy', 'text'],
+    ['quantity', 'Qty', 'qty'], ['avg_cost', 'Avg Cost', 'px'], ['market_price', 'Mkt Px', 'px'], ['market_value', 'MV (local)', 'money'],
+    ['fx_rate', 'FX', 'fx'], ['market_value_base', 'MV (' + b + ')', 'money'], ['unrealised_pnl_base', 'P&L (' + b + ')', 'pnl'],
+    ['pnl_pct', 'P&L %', 'pct'], ['weight_pct', 'Acct Wt %', 'num2']];
+}
+function rowsFor(view) {
+  var d = lastData;
+  if (view === 'accounts') return d.accounts.slice();
+  if (view === 'symbols') return d.symbols.slice();
+  if (view === 'asset_class') return d.exposure.asset_class.slice();
+  if (view === 'currency') return d.exposure.currency.slice();
+  return d.positions.slice();
+}
+function cell(v, type) {
+  var empty = (v === null || v === undefined);
+  switch (type) {
+    case 'key':   return '<td class="key">' + esc(v) + '</td>';
+    case 'text':  return '<td>' + (empty ? '—' : esc(v)) + '</td>';
+    case 'list':  return '<td>' + esc((v || []).join(', ')) + '</td>';
+    case 'money':
+    case 'int':   return '<td class="num">' + money(v) + '</td>';
+    case 'pnl':   return '<td class="num ' + cls(v) + '">' + (empty ? '—' : signed(v)) + '</td>';
+    case 'pct':   return '<td class="num ' + cls(v) + '">' + pct(v) + '</td>';
+    case 'qty':   return '<td class="num ' + (v < 0 ? 'neg' : '') + '">' + money(v, (v % 1) ? 4 : 0) + '</td>';
+    case 'px':    return '<td class="num">' + (empty ? '—' : money(v, v < 10 ? 4 : 2)) + '</td>';
+    case 'fx':    return '<td class="num">' + (empty ? '<span class="neg">missing</span>' : Number(v).toPrecision(6)) + '</td>';
+    case 'num2':  return '<td class="num">' + (empty ? '—' : Number(v).toFixed(2)) + '</td>';
+    case 'share': return '<td class="num"><span class="bar" style="width:' + Math.round((v || 0) * 0.6) + 'px"></span>' + (empty ? '—' : Number(v).toFixed(1) + '%') + '</td>';
+  }
+  return '<td>' + esc(v) + '</td>';
+}
+var NUMERIC = { money: 1, pnl: 1, pct: 1, int: 1, qty: 1, px: 1, fx: 1, num2: 1, share: 1 };
+function renderTable() {
+  var b = lastData.summary.base_currency, cols = columns(currentView, b), rows = rowsFor(currentView);
+  if (sortKey) rows.sort(function (x, y) {
+    var a = x[sortKey], c = y[sortKey];
+    if (a === null || a === undefined) return 1;
+    if (c === null || c === undefined) return -1;
+    return (typeof a === 'number' ? a - c : String(a).localeCompare(String(c))) * sortDir;
+  });
+  var html = '<table><thead><tr>' + cols.map(function (c) {
+    var arrow = sortKey === c[0] ? (sortDir > 0 ? ' ▲' : ' ▼') : '';
+    return '<th data-key="' + c[0] + '" class="' + (NUMERIC[c[2]] ? 'num' : '') + '">' + esc(c[1]) + arrow + '</th>';
+  }).join('') + '</tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr>' + cols.map(function (c) { return cell(r[c[0]], c[2]); }).join('') + '</tr>'; }).join('') +
+    '</tbody>';
+  if (currentView !== 'positions') {
+    var s = lastData.summary;
+    var totals = { market_value: money(s.market_value), gross_exposure: money(s.gross_exposure),
+                   cost_basis: money(s.cost_basis), positions: s.positions };
+    html += '<tfoot><tr>' + cols.map(function (c, i) {
+      if (i === 0) return '<td>Firm total</td>';
+      if (c[0] === 'unrealised_pnl') return '<td class="num ' + cls(s.unrealised_pnl) + '">' + signed(s.unrealised_pnl) + '</td>';
+      if (totals[c[0]] !== undefined) return '<td class="num">' + totals[c[0]] + '</td>';
+      return '<td></td>';
+    }).join('') + '</tr></tfoot>';
+  }
+  html += '</table>';
+  var wrap = document.getElementById('tableWrap');
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('th').forEach(function (th) {
+    th.addEventListener('click', function () {
+      var k = th.dataset.key;
+      if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = -1; }
+      renderTable();
+    });
+  });
+}
+document.querySelectorAll('#tabs .tab').forEach(function (t) {
+  t.addEventListener('click', function () {
+    document.querySelectorAll('#tabs .tab').forEach(function (x) { x.classList.remove('active'); });
+    t.classList.add('active'); currentView = t.dataset.view; sortKey = null; renderTable();
+  });
+});
+
+// ── CSV download of the current view ───────────────────────────────────────
+document.getElementById('csvBtn').addEventListener('click', function () {
+  if (!lastData) return;
+  var cols = columns(currentView, lastData.summary.base_currency), rows = rowsFor(currentView);
+  var q = function (v) {
+    v = Array.isArray(v) ? v.join(' ') : (v === null || v === undefined ? '' : String(v));
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  };
+  var csv = [cols.map(function (c) { return q(c[1]); }).join(',')]
+    .concat(rows.map(function (r) { return cols.map(function (c) { return q(r[c[0]]); }).join(','); })).join('\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'portfolio_' + currentView + '.csv';
+  a.click();
+});
+
+function showError(msg) {
+  document.getElementById('errorArea').innerHTML = '<div class="error-box">' + esc(msg) + '</div>';
+}
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    localStorage.setItem('fix-engine-theme', theme);
+  }
+
+  function toggleTheme() {
+    var current = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on page load
+  (function () {
+    var saved = localStorage.getItem('fix-engine-theme') || 'dark';
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>
