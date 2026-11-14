@@ -456,65 +456,15 @@ resource "aws_s3_object" "log_search_html" {
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
-# STEP 2 — APPEND this entire block to the bottom of terraform/main.tf
+# UNIX / LINUX CLI SUPPORT PAGE  (static page, no Lambda / API needed)
 # ═══════════════════════════════════════════════════════════════════════════
 
-# ── Lambda function ─────────────────────────────────────────────────────────
-
-data "archive_file" "market_data_lambda_zip" {
-  type        = "zip"
-  source_file = "${path.module}/../lambda_market_data/lambda_market_data.py"
-  output_path = "${path.module}/build/market_data_lambda.zip"
-}
-
-resource "aws_lambda_function" "market_data" {
-  function_name    = "${var.project_name}-market-data-${random_id.suffix.hex}"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "lambda_market_data.lambda_handler"
-  runtime          = "python3.12"
-  filename         = data.archive_file.market_data_lambda_zip.output_path
-  source_code_hash = data.archive_file.market_data_lambda_zip.output_base64sha256
-  # Outbound call to Coinbase API — 10s timeout + overhead
-  timeout          = 15
-  memory_size      = 256
-  # No layer needed — pure Python stdlib (urllib)
-}
-
-# ── API Gateway  GET /market-data ───────────────────────────────────────────
-
-resource "aws_apigatewayv2_integration" "market_data_integration" {
-  api_id                 = aws_apigatewayv2_api.http_api.id
-  integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.market_data.invoke_arn
-  payload_format_version = "2.0"
-}
-
-resource "aws_apigatewayv2_route" "market_data_route" {
-  api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "GET /market-data"
-  target    = "integrations/${aws_apigatewayv2_integration.market_data_integration.id}"
-}
-
-resource "aws_lambda_permission" "apigw_invoke_market_data" {
-  statement_id  = "AllowAPIGatewayInvokeMarketData"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.market_data.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
-}
-
-# ── Frontend page ────────────────────────────────────────────────────────────
-
-resource "aws_s3_object" "market_data_html" {
-  bucket = aws_s3_bucket.frontend.id
-  key    = "market-data.html"
-  content = templatefile("${path.module}/../frontend/market_data.html", {
-    api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
-  })
+resource "aws_s3_object" "unix_html" {
+  bucket       = aws_s3_bucket.frontend.id
+  key          = "unix.html"
+  content      = templatefile("${path.module}/../frontend/unix.html", {})
   content_type = "text/html"
-  etag = md5(templatefile("${path.module}/../frontend/market_data.html", {
-    api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
-  }))
+  etag         = md5(templatefile("${path.module}/../frontend/unix.html", {}))
 }
 # ═══════════════════════════════════════════════════════════════════════════════
 # STP GENERATOR — append to bottom of terraform/main.tf
@@ -623,4 +573,13 @@ resource "aws_s3_object" "portfolio_html" {
   etag = md5(templatefile("${path.module}/../frontend/portfolio.html", {
     api_endpoint = trimsuffix(aws_apigatewayv2_stage.default.invoke_url, "/")
   }))
+}
+# Old Market Data URL -> redirect to Unix CLI (stale browser caches / bookmarks)
+resource "aws_s3_object" "market_data_redirect" {
+  bucket        = aws_s3_bucket.frontend.id
+  key           = "market-data.html"
+  source        = "${path.module}/../frontend/market_data_redirect.html"
+  content_type  = "text/html"
+  cache_control = "no-cache"
+  etag          = filemd5("${path.module}/../frontend/market_data_redirect.html")
 }

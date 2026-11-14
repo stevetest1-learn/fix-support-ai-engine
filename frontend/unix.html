@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unix / Linux CLI — FIX Support AI Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #0a0c12; color: #e8e8e8; margin: 0; padding: 1.5rem 1rem; }
+
+  nav { max-width: 1100px; margin: 0 auto 1.5rem auto; display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+  nav a { font-size: 12px; color: #6a6a9a; text-decoration: none; border: 1px solid #2a2d3a; border-radius: 6px; padding: 5px 12px; transition: all .15s; }
+  nav a:hover  { color: #fff; border-color: #3b6fea; }
+  nav a.active { color: #3b6fea; border-color: #3b6fea; }
+
+  h1.site-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 3px 0; }
+  p.site-sub    { text-align: center; color: #5a5a7a; font-size: 13px; margin: 0 0 1.5rem 0; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .card { background: #13151e; border: 1px solid #22253a; border-radius: 10px; padding: 1.25rem; margin: 0 0 1.25rem 0; }
+  .card-title { font-size: 12px; font-weight: 700; color: #7a82a8; text-transform: uppercase; letter-spacing: .9px; margin: 0 0 .9rem 0; padding-bottom: .6rem; border-bottom: 1px solid #22253a; display: flex; align-items: center; gap: .5rem; }
+  .card-title .hint { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; color: #3e4460; font-size: 11px; }
+
+  /* VARIABLES */
+  .vars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .65rem; }
+  .var-box { display: flex; flex-direction: column; gap: 4px; }
+  .var-box label { font-size: 10px; color: #7a82a8; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+  .var-box label code { color: #f59e0b; font-size: 10px; background: none; }
+  input[type=text], select { background: #0a0c12; color: #e8e8e8; border: 1px solid #22253a; border-radius: 6px; padding: 7px 10px; font-size: 12px; font-family: Menlo, Consolas, monospace; width: 100%; }
+  input[type=text]:focus, select:focus { outline: none; border-color: #3b6fea; }
+  .vars-foot { display: flex; justify-content: space-between; align-items: center; margin-top: .75rem; flex-wrap: wrap; gap: .5rem; }
+  .vars-foot p { margin: 0; font-size: 11px; color: #5a5a7a; }
+  .btn-sm { font-size: 11px; color: #8888a0; background: none; border: 1px solid #22253a; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+  .btn-sm:hover { color: #fff; border-color: #3b6fea; }
+
+  /* TOOLBAR */
+  .toolbar { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+  .search-box { flex: 1; min-width: 240px; position: relative; }
+  .search-box input { padding: 10px 12px 10px 34px; font-size: 13px; font-family: inherit; }
+  .search-box .icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #5a5a7a; font-size: 14px; }
+  .chips { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .chip { font-size: 12px; color: #8888a0; background: #13151e; border: 1px solid #22253a; border-radius: 20px; padding: 5px 12px; cursor: pointer; transition: all .15s; }
+  .chip:hover { color: #fff; border-color: #3b6fea; }
+  .chip.on { color: #fff; background: #1a2240; border-color: #3b6fea; }
+  .chip .n { color: #5a5a7a; margin-left: 4px; font-size: 11px; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 1.75rem; }
+  .section-head { display: flex; align-items: baseline; gap: .6rem; margin: 0 0 .75rem 0; padding: 6px 10px; background: #13182a; border-left: 3px solid #3b6fea; border-radius: 0 6px 6px 0; }
+  .section-head h2 { font-size: 14px; margin: 0; color: #fff; font-weight: 700; }
+  .section-head span { font-size: 12px; color: #6a6a9a; }
+
+  .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: .75rem; }
+  .cmd { background: #13151e; border: 1px solid #22253a; border-radius: 9px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s; }
+  .cmd:hover { border-color: #33395a; }
+  .cmd-top { display: flex; align-items: center; gap: .5rem; padding: .6rem .8rem .35rem .8rem; }
+  .cmd-title { font-size: 13px; font-weight: 700; color: #e8e8e8; }
+  .cmd-copy { margin-left: auto; font-size: 11px; color: #6a6a9a; background: none; border: 1px solid #22253a; border-radius: 4px; padding: 2px 9px; cursor: pointer; flex-shrink: 0; }
+  .cmd-copy:hover { color: #fff; border-color: #3b6fea; }
+  .cmd-copy.ok { color: #4ade80; border-color: #166534; }
+  pre.code { margin: 0 .8rem; background: #0a0c12; border: 1px solid #1a1d2e; border-radius: 6px; padding: .55rem .7rem; font-family: Menlo, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.55; color: #4ade80; white-space: pre-wrap; word-break: break-all; }
+  pre.code .prompt { color: #3e4460; user-select: none; }
+  .tok { color: #f59e0b; background: #2a2010; border-radius: 3px; padding: 0 2px; }
+  .tok-set { color: #7ab8f5; }
+  .cmd-desc { font-size: 12px; color: #8888a0; line-height: 1.5; padding: .5rem .8rem .7rem .8rem; }
+  .cmd-desc b { color: #c8d0e8; font-weight: 600; }
+  .tag-sudo { font-size: 9px; font-weight: 700; color: #f87171; border: 1px solid #7f1d1d; border-radius: 3px; padding: 1px 5px; letter-spacing: .5px; }
+
+  /* BUILDER */
+  .builder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .65rem; align-items: end; }
+  .checks { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .75rem; }
+  .checks label { font-size: 12px; color: #8888a0; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  input[type=checkbox] { accent-color: #3b6fea; }
+  .builder-out { margin-top: .9rem; }
+  .builder-out pre.code { margin: 0; font-size: 13px; }
+  .builder-out .row { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+
+  /* PLAYBOOKS */
+  .pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: .75rem; }
+  details.pb { background: #13151e; border: 1px solid #22253a; border-radius: 9px; }
+  details.pb summary { cursor: pointer; padding: .75rem .9rem; font-size: 13px; font-weight: 700; color: #e8e8e8; list-style: none; display: flex; align-items: center; gap: .5rem; }
+  details.pb summary::-webkit-details-marker { display: none; }
+  details.pb summary::after { content: '+'; margin-left: auto; color: #5a5a7a; font-size: 16px; }
+  details.pb[open] summary::after { content: '−'; }
+  details.pb[open] { border-color: #3b6fea; }
+  .pb-body { padding: 0 .9rem .9rem .9rem; }
+  .pb-step { margin-bottom: .7rem; }
+  .pb-step p { margin: 0 0 4px 0; font-size: 12px; color: #a0a8c0; }
+  .pb-step p b { color: #3b6fea; margin-right: 4px; }
+  .pb-step pre.code { margin: 0; font-size: 11.5px; cursor: pointer; }
+  .pb-step pre.code:hover { border-color: #3b6fea; }
+
+  .empty { text-align: center; color: #5a5a7a; padding: 2rem; border: 1px dashed #22253a; border-radius: 10px; font-size: 13px; display: none; }
+  .note { font-size: 11px; color: #5a5a7a; text-align: center; margin-top: 1rem; }
+  footer { text-align: center; color: #2e3250; font-size: 11px; margin-top: 2.5rem; }
+
+  @media (max-width: 560px) { .cmd-grid { grid-template-columns: 1fr; } }
+
+  /* ── LIGHT MODE OVERRIDES ─────────────────────────────── */
+  body.light-mode { background: #f0f2f8; color: #1a1d2e; }
+  body.light-mode .card, body.light-mode .cmd, body.light-mode details.pb, body.light-mode .chip { background: #ffffff; border-color: #d0d5e8; }
+  body.light-mode nav a { color: #5a5a9a; border-color: #d0d5e8; background: #ffffff; }
+  body.light-mode nav a:hover, body.light-mode nav a.active { color: #3b6fea; border-color: #3b6fea; }
+  body.light-mode h1.site-title, body.light-mode .section-head h2, body.light-mode .cmd-title, body.light-mode details.pb summary { color: #1a1d2e; }
+  body.light-mode .site-sub { color: #7a7aaa; }
+  body.light-mode input[type=text], body.light-mode select { background: #f8f9fc; color: #1a1d2e; border-color: #d0d5e8; }
+  body.light-mode pre.code { background: #0f1420; border-color: #d0d5e8; }
+  body.light-mode .section-head { background: #e8eef8; }
+  body.light-mode .chip.on { background: #e8eef8; color: #3b6fea; border-color: #3b6fea; }
+  body.light-mode .cmd-desc { color: #5a5a7a; }
+  body.light-mode .cmd-desc b { color: #2a2d4a; }
+  body.light-mode .pb-step p { color: #4a4a7a; }
+  body.light-mode footer { color: #9a9ab8; }
+
+  .theme-toggle { margin-left: auto; background: none; border: 1px solid #2a2d3a; border-radius: 20px; padding: 5px 14px; font-size: 12px; color: #6a6a9a; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; white-space: nowrap; }
+  .theme-toggle:hover { color: #fff; border-color: #3b6fea; }
+  body.light-mode .theme-toggle { border-color: #d0d5e8; color: #5a5a9a; background: #fff; }
+  body.light-mode .theme-toggle:hover { color: #3b6fea; border-color: #3b6fea; }
+
+  @media print {
+    nav, .toolbar, .chips, #varsCard, #builderCard, .cmd-copy, .theme-toggle { display: none !important; }
+    body { background: #fff; color: #000; }
+    .cmd, .card { border-color: #ccc; break-inside: avoid; }
+    pre.code { background: #f5f5f5; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">FIX Tools Home</a>
+  <a href="latency.html">Latency Analyser</a>
+  <a href="trade-latency.html">Trade Latency</a>
+  <a href="log-search.html">Log Search</a>
+  <a href="unix.html" class="active">Unix CLI</a>
+  <a href="stp.html">STP Generator</a>
+  <a href="portfolio.html">Portfolio Analyser</a>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Light</span>
+  </button>
+</nav>
+
+<h1 class="site-title">FIX Support AI Engine</h1>
+<p class="site-sub">Unix / Linux command-line support &mdash; copy-ready commands for debugging FIX, OMS / EMS and trading platforms in production</p>
+
+<div class="wrap">
+
+  <!-- VARIABLES -->
+  <div class="card" id="varsCard">
+    <p class="card-title">⚙️ Your Environment <span class="hint">Fill in once &mdash; every command below updates automatically</span></p>
+    <div class="vars-grid" id="varsGrid"></div>
+    <div class="vars-foot">
+      <p>Values stay in your browser. Blank fields show as <span class="tok">{PLACEHOLDER}</span> in the commands.</p>
+      <button class="btn-sm" id="clearVars">Clear all</button>
+    </div>
+  </div>
+
+  <!-- FIX GREP BUILDER -->
+  <div class="card" id="builderCard">
+    <p class="card-title">🧰 FIX Log Grep Builder <span class="hint">Pick what you're looking for &mdash; get a one-liner</span></p>
+    <div class="builder-grid">
+      <div class="var-box">
+        <label>Message Type (35)</label>
+        <select id="bMsgType"></select>
+      </div>
+      <div class="var-box">
+        <label>Extra filter #1 (tag=value)</label>
+        <input type="text" id="bF1" placeholder="e.g. 39=8">
+      </div>
+      <div class="var-box">
+        <label>Extra filter #2 (tag=value)</label>
+        <input type="text" id="bF2" placeholder="e.g. 55=EUR/USD">
+      </div>
+      <div class="var-box">
+        <label>Context lines</label>
+        <select id="bCtx"><option value="0">none</option><option>2</option><option>5</option><option>10</option></select>
+      </div>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="bSender"> Only from SenderCompID (49)</label>
+      <label><input type="checkbox" id="bTarget"> Only from TargetCompID side</label>
+      <label><input type="checkbox" id="bId"> Match ClOrdID / OrigClOrdID</label>
+      <label><input type="checkbox" id="bGz"> Log is gzipped (.gz)</label>
+      <label><input type="checkbox" id="bLive"> Follow live (tail -F)</label>
+      <label><input type="checkbox" id="bCount"> Count only</label>
+    </div>
+    <div class="builder-out">
+      <div class="row"><button class="cmd-copy" id="bCopy">Copy</button></div>
+      <pre class="code" id="bOut"></pre>
+    </div>
+  </div>
+
+  <!-- PLAYBOOKS -->
+  <div class="section" id="sec-playbooks">
+    <div class="section-head"><h2>🚑 Triage Playbooks</h2><span>Step-by-step for the most common production calls &mdash; click any command to copy</span></div>
+    <div class="pb-grid" id="pbGrid"></div>
+  </div>
+
+  <!-- COMMAND LIBRARY -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="icon">🔍</span>
+      <input type="text" id="filter" placeholder="Search commands… e.g. tail, port, sequence, disk, openssl, 35=3">
+    </div>
+    <button class="btn-sm" onclick="window.print()">🖨 Print cheat sheet</button>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div id="library"></div>
+  <div class="empty" id="empty">No commands match your search.</div>
+
+  <p class="note">Most commands work on RHEL / CentOS / Rocky, Ubuntu / Debian and macOS. Commands marked <span class="tag-sudo">SUDO</span> need elevated privileges &mdash; follow your firm's change-control policy in production.</p>
+</div>
+
+<footer>FIX Support AI Engine &nbsp;&middot;&nbsp; Steve Hatfield &nbsp;&middot;&nbsp; FIX Protocol Specialist</footer>
+
+<script>
+var R = String.raw;
+
+// ── Variables ────────────────────────────────────────────────────────────────
+var VARS = [
+  { k: 'LOG',    label: 'FIX / app log file',  ph: '/opt/fix/logs/FIX.4.4-CLIENT-BROKER.messages.log' },
+  { k: 'DIR',    label: 'Log directory',       ph: '/opt/fix/logs' },
+  { k: 'CFG',    label: 'Config file',         ph: '/opt/fix/config/session.cfg' },
+  { k: 'SENDER', label: 'SenderCompID (49)',   ph: 'CLIENT1' },
+  { k: 'TARGET', label: 'TargetCompID (56)',   ph: 'BROKER' },
+  { k: 'HOST',   label: 'Counterparty host / IP', ph: 'fix.broker.com' },
+  { k: 'PORT',   label: 'Port',                ph: '9878' },
+  { k: 'ID',     label: 'ClOrdID / OrderID',   ph: 'ORD-20241113-0001' },
+  { k: 'PROC',   label: 'Process / service name', ph: 'fixengine' }
+];
+var vals = {};
+try { vals = JSON.parse(localStorage.getItem('unix-cli-vars') || '{}') || {}; } catch (e) { vals = {}; }
+
+// ── Command library ──────────────────────────────────────────────────────────
+var SECTIONS = [
+{ id: 'logs', icon: '📂', title: 'Find & Read Logs', blurb: 'Locate the right file, then read it without crashing the box',
+  cmds: [
+  { t: 'Newest files last', c: R`ls -ltrh {DIR}`, d: 'Lists by modification time, oldest first, so the log being written right now is at the <b>bottom</b>. <b>-h</b> shows human sizes.' },
+  { t: 'Logs touched in the last hour', c: R`find {DIR} -type f -mmin -60 -ls`, d: 'Which files are actively being written? Change <b>-60</b> to any number of minutes. Use <b>-mtime -1</b> for the last day.' },
+  { t: 'Find a log anywhere by name', c: R`find / -type f -name "*{SENDER}*" -name "*.log" 2>/dev/null`, d: 'Searches the whole filesystem for logs containing the CompID. <b>2>/dev/null</b> hides permission-denied noise.' },
+  { t: 'Follow a log live', c: R`tail -F {LOG}`, d: 'Streams new lines as they arrive. Capital <b>-F</b> keeps following after the log rotates at midnight / SOD.' },
+  { t: 'Follow live, filtered', c: R`tail -F {LOG} | grep --line-buffered -iE "error|reject|logout|disconnect"`, d: 'Live view of only the lines that matter. <b>--line-buffered</b> stops grep from holding output back.' },
+  { t: 'Last N lines', c: R`tail -n 500 {LOG}`, d: 'Last 500 lines. Use <b>head -n 50</b> for the start of the file (e.g. to see the logon at SOD).' },
+  { t: 'Browse a big file safely', c: R`less +F {LOG}`, d: 'Never <b>cat</b> or <b>vi</b> a multi-GB log. In less: <b>Ctrl-C</b> stop following, <b>/text</b> search, <b>n</b> next, <b>G</b> end, <b>F</b> resume follow, <b>q</b> quit.' },
+  { t: 'Print a line range', c: R`sed -n '15000,15100p' {LOG}`, d: 'Jump straight to the line numbers that grep -n gave you.' },
+  { t: 'Extract a time window', c: R`sed -n '/14:30:00/,/14:35:00/p' {LOG}`, d: 'Everything from the first 14:30:00 to the first 14:35:00. Both timestamps must actually appear in the file.' },
+  { t: 'Read rotated / compressed logs', c: R`zcat {LOG}.gz | tail -n 200`, d: 'Read .gz archives without unzipping to disk. Use <b>zless</b> to page through and <b>zgrep</b> to search.' },
+  { t: 'Line count & size', c: R`wc -l {LOG} && ls -lh {LOG}`, d: 'Quick sense of volume before you start grepping.' },
+  { t: 'Service logs (systemd)', c: R`journalctl -u {PROC} --since "1 hour ago" --no-pager`, d: 'For apps running as systemd services. Add <b>-f</b> to follow, <b>-p err</b> for errors only.' }
+  ]},
+{ id: 'grep', icon: '🔎', title: 'Search (grep)', blurb: 'Find the needle — and the lines around it',
+  cmds: [
+  { t: 'Case-insensitive with line numbers', c: R`grep -in "error" {LOG}`, d: '<b>-i</b> ignores case, <b>-n</b> prints line numbers you can feed to sed / less.' },
+  { t: 'Show context around a match', c: R`grep -n -C 10 "{ID}" {LOG}`, d: '10 lines before and after. Use <b>-B</b> (before) or <b>-A</b> (after) on their own.' },
+  { t: 'Match any of several terms', c: R`grep -nE "ERROR|WARN|Exception|Timeout" {LOG}`, d: '<b>-E</b> enables extended regex so <b>|</b> means OR.' },
+  { t: 'Exclude the noise', c: R`grep -v "35=0" {LOG} | grep -v "35=1"`, d: '<b>-v</b> inverts the match. Here: drop heartbeats and test requests.' },
+  { t: 'Count matches', c: R`grep -c "Rejected" {LOG}`, d: 'Just the number of matching lines — great for "how many since open?".' },
+  { t: 'Search a whole directory', c: R`grep -rn "{ID}" {DIR}`, d: 'Recursive search through every file. Use <b>-l</b> to list only the file names.' },
+  { t: 'Search compressed archives', c: R`zgrep -n "{ID}" {DIR}/*.gz`, d: 'Same as grep, but reads .gz files directly — for yesterday\'s or last week\'s logs.' },
+  { t: 'Literal string (no regex)', c: R`grep -F "44=1.08500" {LOG}`, d: '<b>-F</b> treats dots, brackets etc. literally — faster and safer for prices and IDs.' },
+  { t: 'Pull out just the value', c: R`grep -o "11=[^|]*" {LOG} | sort -u`, d: '<b>-o</b> prints only the matched part. Here: every unique ClOrdID in the file.' },
+  { t: 'Top repeating errors', c: R`grep -i "error" {LOG} | cut -d' ' -f3- | sort | uniq -c | sort -rn | head -20`, d: 'Strips the leading timestamp (fields 1–2) so identical errors group together. Adjust <b>-f3-</b> to your log format.' },
+  { t: 'Errors per minute', c: R`grep -i "error" {LOG} | cut -c1-14 | uniq -c`, d: 'Groups by the first 14 characters (e.g. <b>20241113-14:30</b>). Spot the exact minute it started.' },
+  { t: 'Binary / SOH log shows "Binary file matches"', c: R`grep -a "{ID}" {LOG}`, d: '<b>-a</b> forces grep to treat the file as text — needed for raw FIX logs with SOH (\\x01) delimiters.' }
+  ]},
+{ id: 'fix', icon: '📡', title: 'FIX Logs', blurb: 'Session and order-flow forensics. The tr converts SOH (\\x01) to | so tag matching is exact — harmless if your log is already pipe-delimited',
+  cmds: [
+  { t: 'Make a raw FIX log readable', c: R`tr '\001' '|' < {LOG} > /tmp/fix_readable.log`, d: 'Converts invisible SOH delimiters to pipes. Or view without converting: <b>cat -v {LOG} | less</b> (SOH shows as ^A).' },
+  { t: 'Watch FIX traffic live', c: R`tail -F {LOG} | tr '\001' '|' | grep --line-buffered -v '|35=0|'`, d: 'Live session view with heartbeats suppressed.' },
+  { t: 'Logons & logouts', c: R`tr '\001' '|' < {LOG} | grep -E '\|35=(A|5)\|'`, d: 'Every Logon (35=A) and Logout (35=5). Check tag <b>58</b> on logouts for the reason, and <b>141=Y</b> for sequence resets on logon.' },
+  { t: 'Session-level rejects (35=3)', c: R`tr '\001' '|' < {LOG} | grep '|35=3|'`, d: 'Malformed messages. <b>45</b> = RefSeqNum, <b>371</b> = RefTagID, <b>373</b> = reason code, <b>58</b> = text.' },
+  { t: 'Business rejects (35=j)', c: R`tr '\001' '|' < {LOG} | grep '|35=j|'`, d: 'Valid FIX but unsupported by the counterparty — e.g. unknown MsgType or missing conditionally-required field. <b>380</b> = reason.' },
+  { t: 'Rejected orders (35=8, 39=8)', c: R`tr '\001' '|' < {LOG} | grep '|35=8|' | grep '|39=8|'`, d: 'Execution reports with OrdStatus=Rejected. Tag <b>58</b> tells you why (credit, price band, symbol, etc.).' },
+  { t: 'Cancel / replace rejects (35=9)', c: R`tr '\001' '|' < {LOG} | grep '|35=9|'`, d: 'OrderCancelReject. <b>102</b> = CxlRejReason (0 = too late, 1 = unknown order…), <b>434</b> = response to cancel or replace.' },
+  { t: 'Fills only', c: R`tr '\001' '|' < {LOG} | grep '|35=8|' | grep -E '\|150=(1|2|F)\|'`, d: 'Partial and full fills (ExecType 1/2 for FIX 4.2, F for 4.4+). Check <b>31</b> LastPx, <b>32</b> LastQty, <b>14</b> CumQty.' },
+  { t: 'Full lifecycle of one order', c: R`tr '\001' '|' < {LOG} | grep -E '\|(11|41|37)={ID}\|'`, d: 'Every message carrying the ID as ClOrdID (11), OrigClOrdID (41) or OrderID (37) — NOS → ack → fills / cancels in order.' },
+  { t: 'Message type breakdown', c: R`tr '\001' '|' < {LOG} | grep -o '|35=[^|]*' | sort | uniq -c | sort -rn`, d: 'How many of each MsgType are in the log. A spike in 35=2 or 35=3 is an instant red flag.' },
+  { t: 'Resend requests & sequence resets', c: R`tr '\001' '|' < {LOG} | grep -E '\|35=(2|4)\|'`, d: 'ResendRequest (35=2: <b>7</b> BeginSeqNo, <b>16</b> EndSeqNo) and SequenceReset (35=4: <b>36</b> NewSeqNo, <b>123=Y</b> gap fill).' },
+  { t: 'Sequence-number errors', c: R`grep -ai -E "MsgSeqNum too low|seqnum|sequence" {LOG} | tail -20`, d: 'The classic "MsgSeqNum too low, expecting X but received Y" — tells you exactly which side needs a reset.' },
+  { t: 'Last sequence number each way', c: R`tr '\001' '|' < {LOG} | grep '|49={SENDER}|' | grep -o '|34=[0-9]*' | tail -1; tr '\001' '|' < {LOG} | grep '|49={TARGET}|' | grep -o '|34=[0-9]*' | tail -1`, d: 'Last outbound seq (from SENDER) then last inbound seq (from TARGET). Compare with the counterparty before agreeing a reset.' },
+  { t: 'Detect inbound sequence gaps', c: R`tr '\001' '|' < {LOG} | grep '|49={TARGET}|' | grep -o '|34=[0-9]*' | cut -d= -f2 | awk 'NR>1 && $1!=p+1 {print "GAP: expected " p+1 " got " $1} {p=$1}'`, d: 'Walks every inbound MsgSeqNum and prints any jump. Silence = no gaps.' },
+  { t: 'Heartbeats & test requests', c: R`tr '\001' '|' < {LOG} | grep -E '\|35=(0|1)\|' | tail -20`, d: 'If you see 35=1 (TestRequest) with no 35=0 reply containing <b>112</b>, the other side is about to drop the session.' },
+  { t: 'Unique symbols traded', c: R`tr '\001' '|' < {LOG} | grep '|35=D|' | grep -o '|55=[^|]*' | sort | uniq -c | sort -rn`, d: 'Order count per Symbol (55). Swap the tag for <b>1</b> (Account), <b>100</b> (ExDestination) or <b>54</b> (Side).' },
+  { t: 'Check SendingTime vs log time', c: R`tr '\001' '|' < {LOG} | grep -o '|52=[^|]*' | tail -5; date -u +"%Y%m%d-%H:%M:%S"`, d: 'Compare the latest SendingTime (52, UTC) against the server\'s own UTC clock. Drift > a few seconds causes "SendingTime accuracy problem" rejects.' }
+  ]},
+{ id: 'net', icon: '🌐', title: 'Network & Connectivity', blurb: 'Is it us, them, or the pipe in between?',
+  cmds: [
+  { t: 'Basic reachability', c: R`ping -c 5 {HOST}`, d: 'Packet loss and round-trip time. Many venues block ICMP — no reply does <b>not</b> mean the host is down.' },
+  { t: 'Is the FIX port open?', c: R`nc -zv -w 5 {HOST} {PORT}`, d: '"succeeded" / "open" = TCP reachable. "timed out" = firewall / routing; "refused" = host up but nothing listening.' },
+  { t: 'Port test without nc / telnet', c: R`timeout 5 bash -c '</dev/tcp/{HOST}/{PORT}' && echo OPEN || echo CLOSED`, d: 'Pure bash — works on locked-down servers where netcat and telnet are not installed.' },
+  { t: 'Interactive connect', c: R`telnet {HOST} {PORT}`, d: 'Old-school but universal. Exit with <b>Ctrl-]</b> then <b>quit</b>.' },
+  { t: 'Path to the venue', c: R`traceroute -n {HOST}`, d: 'Hop-by-hop path. For continuous loss stats per hop use <b>mtr -rwc 50 {HOST}</b>.' },
+  { t: 'TLS FIX session handshake', c: R`openssl s_client -connect {HOST}:{PORT} -servername {HOST}`, d: 'Tests stunnel / TLS FIX endpoints. Look for "Verify return code: 0 (ok)" and the negotiated protocol.' },
+  { t: 'Certificate expiry', c: R`echo | openssl s_client -connect {HOST}:{PORT} -servername {HOST} 2>/dev/null | openssl x509 -noout -subject -dates`, d: 'Shows <b>notAfter</b> — expired certs are a top cause of Monday-morning logon failures.' },
+  { t: 'Our live connections to the port', c: R`ss -tanp | grep ":{PORT}"`, d: 'ESTAB = connected, SYN-SENT = trying (firewall?), CLOSE-WAIT = remote closed but our app hasn\'t. Older boxes: <b>netstat -anp | grep {PORT}</b>.' },
+  { t: 'What is listening locally', c: R`ss -ltnp`, d: 'All listening TCP ports and owning processes — confirm your acceptor session is actually up.' },
+  { t: 'Which process owns a port', c: R`lsof -i :{PORT}`, d: 'Finds the PID holding the port — e.g. "Address already in use" after a bad restart.', sudo: true },
+  { t: 'Capture FIX on the wire', c: R`sudo tcpdump -i any -nn -A host {HOST} and port {PORT}`, d: '<b>-A</b> prints payload as ASCII so you see the raw FIX. Save for Wireshark with <b>-w /tmp/fix.pcap</b>. Plain-text sessions only.', sudo: true },
+  { t: 'DNS resolution', c: R`dig +short {HOST}`, d: 'Is the hostname resolving to the IP the venue gave you? Fallback: <b>nslookup {HOST}</b> or <b>getent hosts {HOST}</b>.' },
+  { t: 'Which route / interface is used', c: R`ip route get {HOST}`, d: 'Confirms traffic leaves via the right NIC / VLAN (cross-connect vs internet).  <b>ip -br addr</b> lists all interfaces.' },
+  { t: 'TCP retransmits & socket stats', c: R`ss -ti dst {HOST}`, d: 'Per-connection RTT, retransmits and congestion window. Climbing <b>retrans</b> = packet loss on the line.' },
+  { t: 'Local firewall rules', c: R`sudo iptables -L -n --line-numbers | grep {PORT}`, d: 'Is a host firewall blocking the port? On newer RHEL: <b>sudo firewall-cmd --list-all</b>.', sudo: true },
+  { t: 'HTTP / REST endpoint check', c: R`curl -sv --max-time 10 https://{HOST}/`, d: 'For REST / WebSocket venue gateways. <b>-v</b> shows DNS, TCP, TLS and HTTP stages so you can see where it stalls.' }
+  ]},
+{ id: 'sys', icon: '🖥️', title: 'System Commands', blurb: 'Health of the box the engine runs on',
+  cmds: [
+  { t: 'Load & uptime', c: R`uptime`, d: 'Load averages for 1 / 5 / 15 min. Compare with CPU count from <b>nproc</b>. Also tells you if the box rebooted.' },
+  { t: 'Top processes', c: R`top -c -o %CPU`, d: 'Live CPU / memory per process. Press <b>M</b> to sort by memory, <b>1</b> for per-core view. <b>htop</b> if installed.' },
+  { t: 'Is my process running?', c: R`ps -ef | grep -i "{PROC}" | grep -v grep`, d: 'PID, start time and the full command line (including the config file it was started with).' },
+  { t: 'Process uptime, CPU & memory', c: R`ps -o pid,etime,%cpu,%mem,rss,cmd -p $(pgrep -f {PROC} | head -1)`, d: '<b>etime</b> = how long it has been running — did it restart overnight?' },
+  { t: 'Disk space', c: R`df -h`, d: 'A full log partition stops FIX engines writing their store and sequence files. Also check <b>df -i</b> for inodes.' },
+  { t: 'What is filling the disk', c: R`du -sh {DIR}/* 2>/dev/null | sort -h | tail -15`, d: 'Biggest items in the log directory, largest last.' },
+  { t: 'Memory', c: R`free -h`, d: 'Look at <b>available</b>, not free. Low available + swap in use = latency.' },
+  { t: 'Was something OOM-killed?', c: R`dmesg -T | grep -iE "oom|killed process" | tail`, d: 'If the engine vanished with no log line, the kernel OOM killer is the usual suspect.', sudo: true },
+  { t: 'CPU / IO pressure', c: R`vmstat 1 5`, d: 'High <b>wa</b> = waiting on disk, high <b>si/so</b> = swapping, high <b>r</b> = CPU run queue. For disk detail: <b>iostat -xz 1 3</b>.' },
+  { t: 'Open file descriptors vs limit', c: R`ls /proc/$(pgrep -f {PROC} | head -1)/fd | wc -l; ulimit -n`, d: 'If the count is near the limit you get "Too many open files" and new sessions fail to connect.' },
+  { t: 'Java thread dump', c: R`jstack $(pgrep -f {PROC} | head -1) > /tmp/threads_$(date +%H%M%S).txt`, d: 'For hung QuickFIX/J or Java OMS processes. Alternative: <b>kill -3 PID</b> writes the dump to the app\'s stdout log.' },
+  { t: 'Service status / restart', c: R`systemctl status {PROC}`, d: 'State, PID and last log lines. Restart with <b>sudo systemctl restart {PROC}</b> — only with sign-off in production.' },
+  { t: 'Clock sync (critical for FIX)', c: R`timedatectl; chronyc tracking`, d: 'Confirms NTP is synced and the offset. Tag 52 / 60 timestamps and latency stats are only as good as this clock.' },
+  { t: 'Current UTC in FIX format', c: R`date -u +"%Y%m%d-%H:%M:%S.%3N"`, d: 'Prints UTC exactly like SendingTime (52) — handy for comparing against log lines and for building test messages. (<b>%3N</b> milliseconds is GNU/Linux only — drop it on macOS.)' },
+  { t: 'Who else is on the box', c: R`w; last -n 10`, d: 'Logged-in users now and recent logins — useful when something changed and nobody knows who did it.' },
+  { t: 'Scheduled jobs', c: R`crontab -l; ls /etc/cron.d/`, d: 'SOD / EOD restarts, log rotation and sequence-reset scripts usually live here.' },
+  { t: 'OS & kernel version', c: R`cat /etc/os-release; uname -r`, d: 'Needed for vendor tickets and when checking compatibility.' }
+  ]},
+{ id: 'cfg', icon: '🛠️', title: 'Config Files', blurb: 'Inspect, compare and change session config safely',
+  cmds: [
+  { t: 'Find FIX config files', c: R`find / -type f \( -name "*.cfg" -o -name "*.ini" -o -name "*.properties" \) 2>/dev/null | grep -i fix`, d: 'Locates QuickFIX-style session configs. Also check the running process command line (<b>ps -ef</b>) for the exact path.' },
+  { t: 'Active settings only', c: R`grep -vE '^\s*(#|;|$)' {CFG}`, d: 'Strips comments and blank lines so you see only what is actually set.' },
+  { t: 'Show one session block', c: R`grep -n -B 3 -A 15 "TargetCompID={TARGET}" {CFG}`, d: 'The [SESSION] block for a counterparty, with line numbers.' },
+  { t: 'Key connectivity settings', c: R`grep -inE "SocketConnectHost|SocketConnectPort|SocketAcceptPort|HeartBtInt|StartTime|EndTime|ResetOn|FileStorePath|FileLogPath" {CFG}`, d: 'The settings behind 90% of "session won\'t log on" calls — host, port, schedule, reset flags and store paths.' },
+  { t: 'Back up before editing', c: R`cp -p {CFG} {CFG}.$(date +%Y%m%d_%H%M%S).bak`, d: 'Timestamped copy that keeps permissions (<b>-p</b>). Always do this before touching a production config.' },
+  { t: 'See exactly what changed', c: R`diff -u {CFG}.bak {CFG}`, d: 'Unified diff — lines with <b>-</b> were removed, <b>+</b> were added. Paste into the change ticket.' },
+  { t: 'Compare config across servers', c: R`diff <(ssh prod-a cat {CFG}) <(ssh prod-b cat {CFG})`, d: 'Spot drift between primary and DR / A and B nodes. Quick check: <b>md5sum {CFG}</b> on both.' },
+  { t: 'Edit a value in place (with backup)', c: R`sed -i.bak 's/^HeartBtInt=.*/HeartBtInt=30/' {CFG}`, d: 'Changes one setting and leaves {CFG}.bak behind. Verify with the diff command above.' },
+  { t: 'Who changed it and when', c: R`stat {CFG}; ls -l {CFG}`, d: 'Modify time, owner and permissions. Match the time against <b>last</b> and the change calendar.' },
+  { t: 'Recently changed configs', c: R`find /etc /opt -type f \( -name "*.cfg" -o -name "*.conf" -o -name "*.xml" \) -mtime -1 2>/dev/null`, d: 'Anything edited in the last 24 hours — first thing to check when "nothing changed" but it broke.' },
+  { t: 'Stored sequence numbers', c: R`head -v {DIR}/*seqnums*`, d: 'QuickFIX file-store seqnum files (QuickFIX/J: *.senderseqnums / *.targetseqnums). Path comes from <b>FileStorePath</b>. Stop the engine before editing.' },
+  { t: 'Host & DNS overrides', c: R`grep -i "{HOST}" /etc/hosts; cat /etc/resolv.conf`, d: 'A stale /etc/hosts entry pointing at an old venue IP is a classic after a migration.' },
+  { t: 'Validate / pretty-print JSON config', c: R`python3 -m json.tool /path/to/config.json`, d: 'Errors out with a line number on bad JSON. With jq installed: <b>jq . config.json</b>.' }
+  ]}
+];
+
+var PLAYBOOKS = [
+{ t: '🔌 FIX session will not log on', steps: [
+  ['Is the engine running?', R`ps -ef | grep -i "{PROC}" | grep -v grep`],
+  ['Can we reach the counterparty port?', R`nc -zv -w 5 {HOST} {PORT}`],
+  ['Is a TCP connection established?', R`ss -tanp | grep ":{PORT}"`],
+  ['What happened on the last logon attempt?', R`tr '\001' '|' < {LOG} | grep -E '\|35=(A|5|3)\|' | tail -10`],
+  ['Check host / port / schedule in config', R`grep -inE "SocketConnectHost|SocketConnectPort|StartTime|EndTime" {CFG}`],
+  ['If TLS: is the certificate valid?', R`echo | openssl s_client -connect {HOST}:{PORT} 2>/dev/null | openssl x509 -noout -dates`]
+]},
+{ t: '🔢 Sequence number mismatch', steps: [
+  ['Find the error text', R`grep -ai "MsgSeqNum too low" {LOG} | tail -5`],
+  ['Our last outbound seq', R`tr '\001' '|' < {LOG} | grep '|49={SENDER}|' | grep -o '|34=[0-9]*' | tail -1`],
+  ['Their last inbound seq', R`tr '\001' '|' < {LOG} | grep '|49={TARGET}|' | grep -o '|34=[0-9]*' | tail -1`],
+  ['Any resend / reset traffic?', R`tr '\001' '|' < {LOG} | grep -E '\|35=(2|4)\|' | tail -10`],
+  ['Check the store files (engine stopped)', R`head -v {DIR}/*seqnums*`]
+]},
+{ t: '📦 Order missing / no fill received', steps: [
+  ['Trace the order end to end', R`tr '\001' '|' < {LOG} | grep -E '\|(11|41|37)={ID}\|'`],
+  ['Was it rejected?', R`tr '\001' '|' < {LOG} | grep '|35=8|' | grep '|39=8|' | grep '{ID}'`],
+  ['Any session / business reject near it?', R`tr '\001' '|' < {LOG} | grep -E '\|35=(3|j)\|' | tail -10`],
+  ['Search older / rotated logs', R`zgrep -a "{ID}" {DIR}/*.gz`],
+  ['Is the session still heartbeating?', R`tr '\001' '|' < {LOG} | grep -E '\|35=(0|1)\|' | tail -5`]
+]},
+{ t: '💾 Disk full / logs stopped writing', steps: [
+  ['Which filesystem is full?', R`df -h`],
+  ['Biggest consumers in the log dir', R`du -sh {DIR}/* 2>/dev/null | sort -h | tail -15`],
+  ['Large files anywhere under /opt', R`find /opt -type f -size +1G -exec ls -lh {} \; 2>/dev/null`],
+  ['Deleted files still held open by a process', R`lsof +L1 | grep -i "{PROC}"`],
+  ['Compress old logs (not today\'s!)', R`find {DIR} -name "*.log" -mtime +1 -exec gzip {} \;`]
+]},
+{ t: '🐢 Slow / high latency', steps: [
+  ['Box under pressure?', R`uptime; vmstat 1 5`],
+  ['Which process is hot?', R`top -b -n 1 -o %CPU | head -15`],
+  ['Network loss to the venue?', R`mtr -rwc 50 {HOST}`],
+  ['TCP retransmits on the session', R`ss -ti dst {HOST}`],
+  ['Clock in sync?', R`chronyc tracking`]
+]}
+];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+var TOK_RX = /\{(LOG|DIR|CFG|SENDER|TARGET|HOST|PORT|ID|PROC)\}/g;
+function fill(cmd) {
+  return cmd.replace(TOK_RX, function (m, k) { return vals[k] ? vals[k] : m; });
+}
+function render(cmd) {
+  return esc(cmd).replace(TOK_RX, function (m, k) {
+    return vals[k] ? '<span class="tok-set">' + esc(vals[k]) + '</span>' : '<span class="tok">' + m + '</span>';
+  });
+}
+function copyText(text, btn, label) {
+  var done = function () {
+    if (!btn) return;
+    btn.textContent = 'Copied!'; btn.classList.add('ok');
+    setTimeout(function () { btn.textContent = label || 'Copy'; btn.classList.remove('ok'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+  ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta);
+}
+
+// ── Variables UI ─────────────────────────────────────────────────────────────
+function buildVars() {
+  var g = document.getElementById('varsGrid');
+  g.innerHTML = VARS.map(function (v) {
+    return '<div class="var-box"><label>' + esc(v.label) + ' <code>{' + v.k + '}</code></label>' +
+      '<input type="text" data-k="' + v.k + '" placeholder="' + esc(v.ph) + '" value="' + esc(vals[v.k] || '') + '"></div>';
+  }).join('');
+  g.querySelectorAll('input').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      vals[inp.getAttribute('data-k')] = inp.value.trim();
+      try { localStorage.setItem('unix-cli-vars', JSON.stringify(vals)); } catch (e) {}
+      refreshAll();
+    });
+  });
+}
+document.getElementById('clearVars').addEventListener('click', function () {
+  vals = {}; try { localStorage.removeItem('unix-cli-vars'); } catch (e) {}
+  buildVars(); refreshAll();
+});
+
+// ── Library ──────────────────────────────────────────────────────────────────
+var activeCat = 'all';
+function buildChips() {
+  var total = SECTIONS.reduce(function (n, s) { return n + s.cmds.length; }, 0);
+  var html = '<span class="chip on" data-c="all">All<span class="n">' + total + '</span></span>';
+  SECTIONS.forEach(function (s) {
+    html += '<span class="chip" data-c="' + s.id + '">' + s.icon + ' ' + esc(s.title) + '<span class="n">' + s.cmds.length + '</span></span>';
+  });
+  var c = document.getElementById('chips'); c.innerHTML = html;
+  c.querySelectorAll('.chip').forEach(function (ch) {
+    ch.addEventListener('click', function () {
+      activeCat = ch.getAttribute('data-c');
+      c.querySelectorAll('.chip').forEach(function (x) { x.classList.toggle('on', x === ch); });
+      buildLibrary();
+    });
+  });
+}
+function buildLibrary() {
+  var q = document.getElementById('filter').value.trim().toLowerCase();
+  var lib = document.getElementById('library');
+  var html = '', shown = 0;
+  SECTIONS.forEach(function (s) {
+    if (activeCat !== 'all' && activeCat !== s.id) return;
+    var list = s.cmds.filter(function (c) {
+      return !q || (c.t + ' ' + c.c + ' ' + c.d + ' ' + s.title).toLowerCase().indexOf(q) !== -1;
+    });
+    if (!list.length) return;
+    shown += list.length;
+    html += '<div class="section"><div class="section-head"><h2>' + s.icon + ' ' + esc(s.title) + '</h2><span>' + esc(s.blurb) + '</span></div><div class="cmd-grid">';
+    list.forEach(function (c) {
+      var idx = s.cmds.indexOf(c);
+      html += '<div class="cmd"><div class="cmd-top"><span class="cmd-title">' + esc(c.t) + '</span>' +
+        (c.sudo ? '<span class="tag-sudo">SUDO</span>' : '') +
+        '<button class="cmd-copy" data-s="' + s.id + '" data-i="' + idx + '">Copy</button></div>' +
+        '<pre class="code"><span class="prompt">$ </span>' + render(c.c) + '</pre>' +
+        '<div class="cmd-desc">' + render(c.d).replace(/&lt;(\/?)b&gt;/g, '<$1b>') + '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  lib.innerHTML = html;
+  document.getElementById('empty').style.display = shown ? 'none' : 'block';
+  lib.querySelectorAll('.cmd-copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var sec = SECTIONS.filter(function (s) { return s.id === b.getAttribute('data-s'); })[0];
+      copyText(fill(sec.cmds[+b.getAttribute('data-i')].c), b);
+    });
+  });
+}
+document.getElementById('filter').addEventListener('input', buildLibrary);
+
+// ── Playbooks ────────────────────────────────────────────────────────────────
+function buildPlaybooks() {
+  var open = [];
+  document.querySelectorAll('#pbGrid details').forEach(function (d, i) { if (d.open) open.push(i); });
+  var g = document.getElementById('pbGrid');
+  g.innerHTML = PLAYBOOKS.map(function (p, pi) {
+    return '<details class="pb"' + (open.indexOf(pi) !== -1 ? ' open' : '') + '><summary>' + esc(p.t) + '</summary><div class="pb-body">' +
+      p.steps.map(function (st, si) {
+        return '<div class="pb-step"><p><b>' + (si + 1) + '.</b>' + esc(st[0]) + '</p>' +
+          '<pre class="code" data-p="' + pi + '" data-s="' + si + '" title="Click to copy">' + render(st[1]) + '</pre></div>';
+      }).join('') + '</div></details>';
+  }).join('');
+  g.querySelectorAll('pre.code').forEach(function (pre) {
+    pre.addEventListener('click', function () {
+      copyText(fill(PLAYBOOKS[+pre.getAttribute('data-p')].steps[+pre.getAttribute('data-s')][1]));
+      pre.style.borderColor = '#22c55e';
+      setTimeout(function () { pre.style.borderColor = ''; }, 900);
+    });
+  });
+}
+
+// ── FIX grep builder ─────────────────────────────────────────────────────────
+var MSG_TYPES = [
+  ['', 'Any message type'], ['A', 'A — Logon'], ['5', '5 — Logout'], ['0', '0 — Heartbeat'], ['1', '1 — Test Request'],
+  ['2', '2 — Resend Request'], ['3', '3 — Session Reject'], ['4', '4 — Sequence Reset'], ['j', 'j — Business Reject'],
+  ['D', 'D — New Order Single'], ['F', 'F — Cancel Request'], ['G', 'G — Cancel/Replace'], ['8', '8 — Execution Report'],
+  ['9', '9 — Cancel Reject'], ['AE', 'AE — Trade Capture Report'], ['V', 'V — MD Request'], ['W', 'W — MD Snapshot'],
+  ['X', 'X — MD Incremental'], ['Y', 'Y — MD Request Reject'], ['R', 'R — Quote Request'], ['S', 'S — Quote']
+];
+document.getElementById('bMsgType').innerHTML = MSG_TYPES.map(function (m) {
+  return '<option value="' + m[0] + '">' + esc(m[1]) + '</option>';
+}).join('');
+
+var builderCmd = '';
+function buildCommand() {
+  var g = function (id) { return document.getElementById(id); };
+  var parts = [];
+  var src = g('bLive').checked ? (g('bGz').checked ? 'zcat {LOG}.gz' : 'tail -F {LOG}') : (g('bGz').checked ? 'zcat {LOG}.gz' : 'cat {LOG}');
+  parts.push(src);
+  parts.push("tr '\\001' '|'");
+  var lb = g('bLive').checked ? ' --line-buffered' : '';
+  var filters = [];
+  var mt = g('bMsgType').value;
+  if (mt) filters.push("'|35=" + mt + "|'");
+  if (g('bSender').checked) filters.push("'|49={SENDER}|'");
+  if (g('bTarget').checked) filters.push("'|49={TARGET}|'");
+  [g('bF1').value.trim(), g('bF2').value.trim()].forEach(function (f) {
+    if (f) filters.push("'|" + f.replace(/'/g, '').replace(/^\|+|\|+$/g, '') + "|'");
+  });
+  var idFilter = g('bId').checked;
+  var ctx = +g('bCtx').value;
+  var count = g('bCount').checked;
+
+  var greps = filters.map(function (f) { return 'grep -F' + lb + ' ' + f; });
+  if (idFilter) greps.push('grep -E' + lb + " '\\|(11|41)={ID}\\|'");
+  if (!greps.length) greps.push('grep -v' + lb + " '|35=0|'");
+  if (ctx && greps.length) greps[greps.length - 1] = greps[greps.length - 1].replace(/^grep /, 'grep -C ' + ctx + ' ');
+  parts = parts.concat(greps);
+  if (count && !g('bLive').checked) parts.push('wc -l');
+  builderCmd = parts.join(' | ');
+  g('bOut').innerHTML = '<span class="prompt">$ </span>' + render(builderCmd);
+}
+['bMsgType', 'bF1', 'bF2', 'bCtx', 'bSender', 'bTarget', 'bId', 'bGz', 'bLive', 'bCount'].forEach(function (id) {
+  var el = document.getElementById(id);
+  el.addEventListener(el.tagName === 'INPUT' && el.type === 'text' ? 'input' : 'change', buildCommand);
+});
+document.getElementById('bCopy').addEventListener('click', function () {
+  copyText(fill(builderCmd), document.getElementById('bCopy'));
+});
+
+function refreshAll() { buildLibrary(); buildPlaybooks(); buildCommand(); }
+
+buildVars(); buildChips(); refreshAll();
+</script>
+<script>
+  // ── Light / Dark theme toggle ─────────────────────────────────────────
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeIcon').textContent  = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('themeIcon').textContent  = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+    try { localStorage.setItem('fix-engine-theme', theme); } catch (e) {}
+  }
+
+  function toggleTheme() {
+    var current = 'dark';
+    try { current = localStorage.getItem('fix-engine-theme') || 'dark'; } catch (e) {}
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  (function () {
+    var saved = 'dark';
+    try { saved = localStorage.getItem('fix-engine-theme') || 'dark'; } catch (e) {}
+    applyTheme(saved);
+  })();
+</script>
+</body>
+</html>
