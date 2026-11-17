@@ -1,7 +1,7 @@
 # FIX Support AI Engine
 
 A production-grade FIX Protocol support platform deployed on AWS.
-Seven free tools for capital markets technologists — no login required.
+Eight free tools for capital markets technologists — no login required.
 
 **Live Demo:** https://dpzvr5uxtdy4g.cloudfront.net
 
@@ -16,8 +16,35 @@ Seven free tools for capital markets technologists — no login required.
 | **FIX Latency Analyser** | Uploads a FIX log and plots session latency per CompID pair with Min/Max/Mean/Median/P95 stats and downloadable CSV. |
 | **Trade Latency Analyser** | Matches 35=D orders to 35=8 fills via ClOrdID and plots round-trip execution latency per venue — scatter chart + box plot distribution. |
 | **OMS/EMS Log Search** | Searches any log file (pipe/CSV/tab/text) with 10 lines of context around every match. FIX messages auto-decoded inline. |
-| **Live Coinbase Market Data** | Real-time Bid/Ask prices via the Coinbase Exchange public REST API with auto-refresh and 24hr stats. |
 | **STP Generator** | Converts a 35=8 Execution Report fill (150=F, 39=1/2) to a complete 35=AE Trade Capture Report with full field derivation map and settlement break risk flagging. |
+| **Portfolio Analyser** | Uploads a holdings CSV or a FIX log of 35=8 fills, converts every position to one base currency with live or manual FX rates, and rolls up by account, symbol, asset class and currency — with concentration, loss and data-quality alerts. |
+| **Unix / Linux CLI Support** | 87 copy-ready commands for production support on trading platforms — fill in your log path, CompIDs and host once and every command updates. Includes a FIX Log Grep Builder and step-by-step triage playbooks. |
+
+---
+
+## Unix / Linux CLI Support
+
+A command-line toolkit for support engineers debugging FIX, OMS / EMS and
+trading platforms in production. Runs entirely in the browser — no backend.
+
+| Category | What's covered |
+|---|---|
+| **Find & Read Logs** | `tail -F`, `less +F`, time-window extracts, rotated `.gz` logs, `journalctl` |
+| **Search (grep)** | Context lines, multi-term, recursive, `zgrep`, top repeating errors, errors per minute |
+| **FIX Logs** | Logons / logouts, session & business rejects, rejected orders, fills, full order lifecycle by ClOrdID, MsgType breakdown, sequence-gap detection |
+| **Network & Connectivity** | `nc` / bash port tests, `openssl` TLS & cert expiry, `ss`, `lsof`, `tcpdump`, `mtr`, DNS and routing |
+| **System** | Load, CPU, memory, disk, OOM kills, file-descriptor limits, Java thread dumps, NTP clock sync |
+| **Config Files** | QuickFIX session blocks, timestamped backups, `diff` across servers, stored sequence numbers |
+
+**Also includes**
+
+- **Your Environment bar** — enter `{LOG}`, `{CFG}`, `{SENDER}`, `{TARGET}`, `{HOST}`, `{PORT}`, `{ID}` and `{PROC}` once; every command fills in automatically (saved in your browser only).
+- **FIX Log Grep Builder** — pick a MsgType (35=A, 35=8, 35=AE…), add tag filters such as `39=8`, choose follow-live / gzipped / count-only, and get the exact one-liner.
+- **Triage playbooks** — session won't log on, sequence number mismatch, missing order / fill, disk full, high latency.
+- **Search, category filters and a printable cheat sheet.**
+
+Commands target Linux servers (RHEL / Rocky 7+, Ubuntu 14.04+, Debian 8+).
+A few differ on macOS — e.g. use `top -o cpu` instead of `top -c`.
 
 ---
 
