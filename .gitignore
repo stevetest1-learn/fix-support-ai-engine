@@ -35,3 +35,9 @@ credentials
 .idea/
 *.swp
 *.swo
+
+# Local-only files (not needed to run the project)
+Claude outputs/
+parsed_output.txt
+archive/
+terraform/fix_parser_dynamic.py

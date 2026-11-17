@@ -1,0 +1,5 @@
+# Copy this file to terraform.tfvars and set your own values.
+# terraform.tfvars is git-ignored, so your local paths stay private.
+
+# Absolute path to the FIX Repository folder (contains FIX.4.0, FIX.4.2, ... subfolders)
+repository_source_dir = "/absolute/path/to/fix-support-ai-engine/repository"

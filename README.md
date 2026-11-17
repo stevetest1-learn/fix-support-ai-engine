@@ -56,9 +56,10 @@ https://www.fixtrading.org/standards/fix-repository/ and place them in:
 **3. Deploy to AWS**
 ```bash
 cd terraform
+cp terraform.tfvars.example terraform.tfvars   # then edit the path inside
 terraform init
-terraform plan -var="repository_source_dir=/path/to/your/repository"
-terraform apply -var="repository_source_dir=/path/to/your/repository"
+terraform plan
+terraform apply
 ```
 
 **4. Get your live URL**
@@ -129,7 +130,7 @@ Pull requests are welcome. For major changes please open an issue first.
 If these tools have helped you in production, please consider a small
 donation to keep the servers running:
 
-👉 [Donate via PayPal](https://paypal.me/YOURPAYPALNAME)
+👉 [Donate via PayPal](https://www.paypal.com/ncp/payment/LWWLG6BHRDH58)
 
 ---
 
